@@ -1,0 +1,75 @@
+# Byte-compiled / optimized / DLL files
+# this gitignore file is from here: https://github.com/OCA/pylint-odoo/blob/master/.gitignore
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+bin/
+build/
+develop-eggs/
+dist/
+eggs/
+#lib/  # I need to add static/lib
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+*.eggs
+AUTHORS
+ChangeLog
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+
+# Translations
+*.mo
+*.pot
+
+# Pycharm
+.idea
+
+# VS Code
+.vscode
+
+# Django stuff:
+*.log
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
+# Rope
+.ropeproject
+
+# Sphinx documentation
+docs/_build/
+
+# Backup files
+*~
+*.swp
+
+# Mac files
+.DS_Store
+
+# file generated when running tests
+.cprofile_*
+node_modules
+package-lock.json

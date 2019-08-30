@@ -1,0 +1,21 @@
+<odoo>
+    <data>
+        <record id="task_gantt_view" model="ir.ui.view">
+            <field name="name">Tasks Gantt</field>
+            <field name="model">project.task</field>
+            <field name="type">dhx_gantt</field>
+            <field name="arch" type="xml">
+                <dhx_gantt/>
+            </field>
+        </record>
+
+        <record id="action_task_gantt" model="ir.actions.act_window">
+            <field name="name">Tasks</field>
+            <field name="res_model">project.task</field>
+            <field name="view_mode">dhx_gantt</field>
+        </record>
+
+        <menuitem name="All Tasks Gantt" id="menu_project_management" parent="project.menu_main_pm"
+            action="action_task_gantt" sequence="2"/>
+    </data>
+</odoo>

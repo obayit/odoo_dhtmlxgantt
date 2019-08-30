@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+
+    <!-- <t t-name="dhx_gantt.gantt_action"> -->
+    <t t-name="dhx_gantt.gantt_view">
+        <!-- <button class="btn btn-primary">Click Me</button> -->
+        <div class="o_dhx_gantt" style='width:100%; height:30%;'>
+            <!-- <h1>Hello There</h1>
+            <table class="o_list_view table table-sm table-striped o_list_view_grouped">
+                <tbody></tbody>
+            </table>
+            <div class="king_gantt">QWERTY</div> -->
+        </div>
+    </t>
+</templates>
