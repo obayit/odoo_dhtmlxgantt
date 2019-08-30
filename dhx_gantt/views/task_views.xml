@@ -5,7 +5,14 @@
             <field name="model">project.task</field>
             <field name="type">dhx_gantt</field>
             <field name="arch" type="xml">
-                <dhx_gantt/>
+                <dhx_gantt
+                    id_field="id"
+                    text="name"
+                    date_start="date_start"
+                    duration="duration"
+                    progress="progress"
+                    open="open"
+                />
             </field>
         </record>
 
@@ -17,5 +24,27 @@
 
         <menuitem name="All Tasks Gantt" id="menu_project_management" parent="project.menu_main_pm"
             action="action_task_gantt" sequence="2"/>
+
+        <record id="view_task_gantt_data_form" model="ir.ui.view">
+            <field name="name">project.task.gant.data.form</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page" position="before">
+                    <page string="Gantt Data">
+                        <group>
+                            <group>
+                                <field name="date_start"/>
+                                <!-- <field name="date_end"/> -->
+                                <field name="planned_duration"/>
+                                <field name="progress"/>
+                                <field name="is_open"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
     </data>
 </odoo>

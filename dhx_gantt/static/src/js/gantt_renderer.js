@@ -6,11 +6,15 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
     var GanttRenderer = AbstractRenderer.extend({
         template: "dhx_gantt.gantt_view",
         on_attach_callback: function () {
+            var self = this;
+            console.log(self.state);
+            console.log(self.state.records);
+            console.log(demo_tasks);
             this.$el.dhx_gantt({
-                data:demo_tasks,
-                scales:[
-                    { unit:"month",step:1,format:"%M"}
-                ]
+                data: self.state.records,
+                // scales:[
+                //     { unit:"month"}
+                // ]
             });
         },
     });
