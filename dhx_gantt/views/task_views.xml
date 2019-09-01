@@ -41,6 +41,12 @@
                                 <field name="is_open"/>
                             </group>
                         </group>
+                        <field name="depending_task_ids">
+                            <tree editable="buttom">
+                                <field name="depending_task_id"/>
+                                <field name="relation_type"/>
+                            </tree>
+                        </field>
                     </page>
                 </xpath>
             </field>

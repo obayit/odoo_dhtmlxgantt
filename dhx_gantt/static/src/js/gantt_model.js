@@ -7,10 +7,9 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             console.log('get()');
             console.log(this.records);
             var data = [];
+            var links = [];
             var formatFunc = gantt.date.str_to_date("%Y-%m-%d %h:%i:%s");
             this.records.forEach(function(record){ 
-                console.log(record.date_start);
-                console.log(formatFunc(record.date_start));
                 data.push({
                     "id": record.id,
                     "text": record.name,
@@ -19,11 +18,14 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
                     "progress": record.progress,
                     "open": record.is_open,
                 });
+                links.push.apply(links, JSON.parse(record.links_serialized_json))
             });
             console.log(data);
+            console.log('links');
+            console.log(links);
             var gantt_model = {
                 data: data,
-                links: [],
+                links: links,
             }
             return {
                 records: gantt_model,
@@ -39,13 +41,12 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
         },
         _load: function(params){
             console.log('_load()');
-            params.gantt_model = 'project.task';
             this.domain = params.domain || this.domain || [];
             var self = this;
             return this._rpc({
-                model: params.gantt_model,
+                model: params.modelName,
                 method: 'search_read',
-                fields: ['name', 'date_start', 'planned_duration', 'progress', 'open'],
+                fields: ['name', 'date_start', 'planned_duration', 'progress', 'open', 'links_serialized_json'],
                 domain: this.domain,
             })
             .then(function (records) {
