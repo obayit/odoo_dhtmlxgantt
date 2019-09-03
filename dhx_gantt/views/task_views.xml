@@ -1,5 +1,6 @@
 <odoo>
     <data>
+
         <record id="task_gantt_view" model="ir.ui.view">
             <field name="name">Tasks Gantt</field>
             <field name="model">project.task</field>
@@ -9,9 +10,10 @@
                     id_field="id"
                     text="name"
                     date_start="date_start"
-                    duration="duration"
+                    duration="planned_duration"
                     progress="progress"
                     open="open"
+                    links_serialized_json="links_serialized_json"
                 />
             </field>
         </record>
