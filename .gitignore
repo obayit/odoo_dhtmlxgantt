@@ -74,3 +74,5 @@ docs/_build/
 node_modules
 package-lock.json
 gantt/
+dhx_gantt/models/scetch.py
+dhx-gantt.code-workspace

@@ -10,9 +10,16 @@ import json
 class GanttController(http.Controller):
 
     @http.route('/gantt_api', type='http', auth="user")
-    def gantt_api(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
+    def gantt_api(self, domain=None, **kw):
         # main GET method
-        tasks = request.env['project.task'].search([('project_id', 'in', [1,2,3,4,5,6,7,8,9])])
+        print('DOMAIN')
+        print(type(domain))
+        print(domain)
+        domain = json.loads(domain)
+        print('deserialized DOMAIN')
+        print(type(domain))
+        print(domain)
+        tasks = request.env['project.task'].search(domain).sorted('date_start')
         res_tasks = []
         res_links = []
         print(tasks)
@@ -39,3 +46,17 @@ class GanttController(http.Controller):
             'data': res_tasks,
             'links': res_links
         })
+
+    @http.route('/gantt_api/task/<int:task_id>', type='http', auth="user", methods=['PUT'])
+    def gantt_api_task_update(self, task_id, open, text, duration, progress, start_date, end_date, parent, **kw):
+        # Request URL: http://localhost:8069/gantt_api/task/13
+        # Form Data: open: true
+        # text: Task 1
+        # duration: 2
+        # progress: 0.25
+        # start_date: 31-08-2019 00:00
+        # end_date: 02-09-2019 00:00
+        # parent: 0
+        print('potis')
+        print('start_date')
+        print(start_date)
