@@ -7,7 +7,7 @@
         <!-- <button class="btn btn-primary">Click Me</button> -->
         <div class="o_dhx_gantt_root">
             <div class="o_dhx_gantt_header">
-                <button type="button" class="btn btn-primary o_dhx_critical_path">Show Critical Path</button>
+                <button type="button" class="btn btn-default o_dhx_critical_path">Show Critical Path</button>
             </div>
             <div class="o_dhx_gantt">
                 <!-- <h1>Hello There</h1>

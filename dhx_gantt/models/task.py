@@ -32,6 +32,29 @@ class Task(models.Model):
     dependency_task_ids = fields.One2many('project.depending.tasks', 'depending_task_id')
     links_serialized_json = fields.Char('Serialized Links JSON', compute="compute_links_json")
 
+    # recursive_dependency_task_ids = fields.Many2many(
+    #     string='Recursive Dependencies',
+    #     comodel_name='project.task',
+    #     compute='_compute_recursive_dependency_task_ids'
+    # )
+
+    # @api.depends('dependency_task_ids')
+    # def _compute_recursive_dependency_task_ids(self):
+    #     for task in self:
+    #         task.recursive_dependency_task_ids = task.get_dependency_tasks(
+    #             task, True,
+    #         )
+
+    # @api.model
+    # def get_dependency_tasks(self, task, recursive=False):
+    #     dependency_tasks = task.with_context(
+    #         prefetch_fields=False,
+    #     ).dependency_task_ids
+    #     if recursive:
+    #         for t in dependency_tasks:
+    #             dependency_tasks |= self.get_dependency_tasks(t, recursive)
+    #     return dependency_tasks
+
     @api.multi
     def compute_links_json(self):
         for r in self:

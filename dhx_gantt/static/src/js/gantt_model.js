@@ -2,14 +2,22 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
     "use strict";
 
     var AbstractModel = require('web.AbstractModel');
+    // var BasicModel = require('web.BasicModel');
     var GanttModel = AbstractModel.extend({
         get: function(){
+        // get: function(id, options){
             console.log('get()');
             console.log(this.records);
+            console.log('Basic.get()');
+            // options = options ? options : {};
+            // options.raw = false;  // prevent x2many field errors on BasicModel's get()
+            // var upperRes = this._super.apply(this, arguments);
+            // console.log(upperRes);
+            // return upperRes;
             var data = [];
             var links = [];
             // var formatFunc = gantt.date.str_to_date("%Y-%m-%d %h:%i:%s");
-            this.records.forEach(function(record){ 
+            // this.records.forEach(function(record){ 
                 // data.push({
                 //     "id": record.id,
                 //     "text": record.name,
@@ -17,22 +25,16 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
                 //     "duration": record.planned_duration,
                 //     "progress": record.progress,
                 //     "open": record.is_open,
-                //     // "id": record[this.id_field],
-                //     // "text": record[this.text],
-                //     // "start_date": formatFunc(record[this.date_start]),
-                //     // "duration": record[this.duration],
-                //     // "progress": record[this.progress],
-                //     // "open": record[this.open],
                 // });
-                console.log(record.links_serialized_json);
-                links.push.apply(links, JSON.parse(record.links_serialized_json))
-            });
+                // console.log(record.links_serialized_json);
+            //     links.push.apply(links, JSON.parse(record.links_serialized_json))
+            // });
             // console.log(data);
             console.log('links');
             console.log(links);
             var gantt_model = {
                 data: this.records,
-                links: links,
+                links: this.links,
             }
             var res = {
                 records: gantt_model,
@@ -43,6 +45,7 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
         },
         load: function(params){
             console.log('load()');
+            console.log({params});
             this.map_id = params.id_field;
             this.map_text = params.text;
             this.map_date_start = params.date_start;
@@ -69,17 +72,18 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
                 domain: this.domain,
             })
             .then(function (records) {
-                self.records = self.convertData(records, params);
+                self.convertData(records, params);
             });
         },
         convertData: function(records){
             console.log('convertData');
             console.log(records);
-            var res = [];
+            var data = [];
             var formatFunc = gantt.date.str_to_date("%Y-%m-%d %h:%i:%s");
             var self = this;
+            var links = [];
             records.forEach(function(record){ 
-                res.push({
+                data.push({
                     id: record[self.map_id],
                     text: record[self.map_text],
                     start_date: formatFunc(record[self.map_date_start]),
@@ -88,9 +92,17 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
                     open: record[self.map_open],
                     links_serialized_json: record[self.map_links_serialized_json]
                 });
+                links.push.apply(links, JSON.parse(record.links_serialized_json))
             });
-            return res;
-        }
+            this.records = data;
+            this.links = links;
+        },
+        taskService: {
+            update: function(data){
+                console.log('it happened');
+                console.log(this);
+            }
+        },
     });
     return GanttModel;
 });

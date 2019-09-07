@@ -2,21 +2,30 @@ odoo.define('dhx_gantt.GanttView', function (require) {
     "use strict";
 
     var AbstractView = require('web.AbstractView');
+    // var BasicView = require('web.BasicView');
     var GanttController = require('dhx_gantt.GanttController');
     var GanttModel = require('dhx_gantt.GanttModel');
     var GanttRenderer = require('dhx_gantt.GanttRenderer');
     var viewRegistry = require('web.view_registry');
 
     var GanttView = AbstractView.extend({
-        config: {
+        viewType: 'dhx_gantt',
+        config: _.extend({}, AbstractView.prototype.config, {
             Controller: GanttController,
             Model: GanttModel,
             Renderer: GanttRenderer,
-        },
+        }),
         init: function (viewInfo, params) {
             console.log('init View');
             console.log(this.arch);
+            console.log({viewInfo});
+            console.log('params');
+            console.log(params);
             this._super.apply(this, arguments);
+            console.log('loadParams after apply super');
+            console.log(this.loadParams);
+            this.loadParams.type = 'list';
+
             this.loadParams.id_field = this.arch.attrs.id_field;
             this.loadParams.date_start = this.arch.attrs.date_start;
             this.loadParams.duration = this.arch.attrs.duration;
@@ -25,7 +34,29 @@ odoo.define('dhx_gantt.GanttView', function (require) {
             this.loadParams.text = this.arch.attrs.text;
             this.loadParams.links_serialized_json = this.arch.attrs.links_serialized_json;
 
+            // this.loadParams.fields = 
+            this.loadParams.fieldNames = [
+                this.arch.attrs.id_field,
+                this.arch.attrs.date_start,
+                this.arch.attrs.duration,
+                this.arch.attrs.open,
+                this.arch.attrs.progress,
+                this.arch.attrs.text,
+                this.arch.attrs.links_serialized_json,
+            ];
+            console.log('infamous');
+            console.log(this.loadParams.fields);
+            console.log(this.loadParams.fieldNames);
+
             this.rendererParams.initDomain = params.domain;
+            this.rendererParams.modelName = params.modelName;
+        },
+        _processFieldsView: function (fieldsView, viewType) {
+            console.log('_processFieldsView');
+            console.log({fieldsView, viewType});
+            var fv = this._super.apply(this, arguments);
+            console.log({fv});
+            return fv;
         },
     })
 
