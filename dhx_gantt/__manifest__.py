@@ -24,7 +24,7 @@
     'depends': [
         'base',
         'project'
-        ],
+    ],
 
     # always loaded
     'data': [

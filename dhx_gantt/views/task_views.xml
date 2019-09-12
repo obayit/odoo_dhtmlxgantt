@@ -14,6 +14,7 @@
                     progress="progress"
                     open="open"
                     links_serialized_json="links_serialized_json"
+                    link_model="project.depending.tasks"
                 />
             </field>
         </record>
@@ -39,13 +40,20 @@
                     <page string="Gantt Data">
                         <group>
                             <group>
-                                <field name="date_start"/>
-                                <!-- <field name="date_end"/> -->
-                                <field name="planned_duration"/>
+                                <!-- <field name="date_start"/>
+                                <field name="planned_duration"/> -->
                                 <field name="progress"/>
                                 <field name="is_open"/>
                             </group>
                         </group>
+                        <field name="dependency_task_ids">
+                            <tree editable="buttom">
+                                <field name="project_id" invisible="1"/>
+                                <field name="task_id" domain="[('project_id', '=', project_id)]"/>
+                                <field name="depending_task_id" domain="[('project_id', '=', project_id)]"/>
+                                <field name="relation_type"/>
+                            </tree>
+                        </field>
                         <field name="depending_task_ids">
                             <tree editable="buttom">
                                 <field name="project_id" invisible="1"/>

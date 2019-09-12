@@ -2,6 +2,7 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
     "use strict";
 
     var AbstractModel = require('web.AbstractModel');
+    var time = require('web.time');
     // var BasicModel = require('web.BasicModel');
     var GanttModel = AbstractModel.extend({
         get: function(){
@@ -53,6 +54,8 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             this.map_progress = params.progress;
             this.map_open = params.open;
             this.map_links_serialized_json = params.links_serialized_json;
+            this.modelName = params.modelName;
+            this.linkModel = params.linkModel;
             return this._load(params);
         },
         reload: function(id, params){
@@ -64,15 +67,20 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             console.log(this);
             console.log(params);
             this.domain = params.domain || this.domain || [];
+            this.modelName = params.modelName || this.modelName;
             var self = this;
             return this._rpc({
-                model: params.modelName,
+                model: this.modelName,
                 method: 'search_read',
                 fields: ['name', 'date_start', 'planned_duration', 'progress', 'open', 'links_serialized_json'],
                 domain: this.domain,
+                orderBy: [{
+                    name: this.map_date_start,
+                    asc: true,
+                }]
             })
             .then(function (records) {
-                self.convertData(records, params);
+                self.convertData(records);
             });
         },
         convertData: function(records){
@@ -81,8 +89,10 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             var data = [];
             var formatFunc = gantt.date.str_to_date("%Y-%m-%d %h:%i:%s");
             var self = this;
+            this.res_ids = [];
             var links = [];
             records.forEach(function(record){ 
+                self.res_ids.push(record[self.map_id]);
                 data.push({
                     id: record[self.map_id],
                     text: record[self.map_text],
@@ -97,12 +107,56 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             this.records = data;
             this.links = links;
         },
-        taskService: {
-            update: function(data){
-                console.log('it happened');
-                console.log(this);
-            }
+        updateTask: function(data){
+            console.log('updateTask');
+            console.log({data});
+            var args = [];
+            var values = {};
+
+            var id = data.id;
+            values[this.map_text] = data.text;
+            values[this.map_duration] = data.duration;
+            values[this.map_open] = data.open;
+            values[this.map_progress] = data.progress;
+
+            var formatFunc = gantt.date.str_to_date("%d-%m-%Y %h:%i");
+            var date_start = formatFunc(data.start_date);
+            values[this.map_date_start] = time.datetime_to_str(date_start);
+            args.push(id);
+            args.push(values)
+            console.log({values});
+            console.log({args});
+            return this._rpc({
+                model: this.modelName,
+                method: 'write',
+                args: args,
+            });
         },
+        createLink: function(data){
+            console.log('createLink');
+            console.log({data});
+            var args = [];
+            var values = {};
+
+            values.id = data.id;
+            values.task_id = data.source;
+            values.depending_task_id = data.target;
+            values.relation_type = data.type;
+
+            args.push([values]);
+            return this._rpc({
+                model: this.linkModel,
+                method: 'create',
+                args: args,
+            });
+        },
+        getCriticalPath: function(){
+            return this._rpc({
+                model: this.modelName,
+                method: 'compute_critical_path',
+                args:[this.res_ids],
+            });
+        }
     });
     return GanttModel;
 });

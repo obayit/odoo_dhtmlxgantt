@@ -10,6 +10,7 @@ odoo.define('dhx_gantt.GanttView', function (require) {
 
     var GanttView = AbstractView.extend({
         viewType: 'dhx_gantt',
+        icon: 'fa-tasks',
         config: _.extend({}, AbstractView.prototype.config, {
             Controller: GanttController,
             Model: GanttModel,
@@ -33,6 +34,8 @@ odoo.define('dhx_gantt.GanttView', function (require) {
             this.loadParams.progress = this.arch.attrs.progress;
             this.loadParams.text = this.arch.attrs.text;
             this.loadParams.links_serialized_json = this.arch.attrs.links_serialized_json;
+            this.loadParams.modelName = params.modelName;
+            this.loadParams.linkModel = this.arch.attrs.link_model;
 
             // this.loadParams.fields = 
             this.loadParams.fieldNames = [
@@ -50,6 +53,15 @@ odoo.define('dhx_gantt.GanttView', function (require) {
 
             this.rendererParams.initDomain = params.domain;
             this.rendererParams.modelName = params.modelName;
+            this.rendererParams.map_id_field = this.arch.attrs.id_field;
+            this.rendererParams.map_date_start = this.arch.attrs.date_start;
+            this.rendererParams.map_duration = this.arch.attrs.duration;
+            this.rendererParams.map_open = this.arch.attrs.open;
+            this.rendererParams.map_progress = this.arch.attrs.progress;
+            this.rendererParams.map_text = this.arch.attrs.text;
+            this.rendererParams.map_links_serialized_json = this.arch.attrs.links_serialized_json;
+            this.rendererParams.link_model = this.arch.attrs.link_model;
+
         },
         _processFieldsView: function (fieldsView, viewType) {
             console.log('_processFieldsView');

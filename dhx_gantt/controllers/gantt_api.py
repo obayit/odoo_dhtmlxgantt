@@ -32,8 +32,8 @@ class GanttController(http.Controller):
         res_links = []
         print(tasks)
         for task in tasks:
-		# {"id":22, "text":"Task #4.2", "start_date":"03-04-2018", "duration":"4", "parent":"15", "progress": 0.1, "open": true},
-		# {"id":"1","source":"1","target":"2","type":"1"},
+            # {"id":22, "text":"Task #4.2", "start_date":"03-04-2018", "duration":"4", "parent":"15", "progress": 0.1, "open": true},
+            # {"id":"1","source":"1","target":"2","type":"1"},
             print('timezone_offset')
             print(timezone_offset)
             print('converting')
@@ -48,7 +48,7 @@ class GanttController(http.Controller):
                 # yyyy-MM-dd HH:mm
                 'start_date': date_start.strftime("%d/%m/%Y %H:%M:%S"),
                 'duration': task.planned_duration,
-                'progress': task.progress,
+                'progress': task.progress / 100.0,
                 'open': task.is_open,
             })
             for link in task.depending_task_ids:
@@ -90,8 +90,14 @@ class GanttController(http.Controller):
             'date_start': start_date,
             'duration': duration,
         })
-        request.env[model_name].browse([task_id]).write({
-            'date_start': start_date,
-            'duration': duration,
-        })
+        values = dict()
+        print(request.params)
+        values[request.params['map_date_start']] = start_date
+        values[request.params['map_duration']] = duration
+        request.env[model_name].browse([task_id]).write(values)
+        return '{"action":"updated"}'
+
+    @http.route('/gantt_api/link/<int:link_id>', type='http', auth="user", methods=['DELETE'])
+    def gantt_api_link_delete(self, link_model, link_id, **kw):
+        request.env[link_model].browse([link_id]).unlink()
         return '{"action":"updated"}'

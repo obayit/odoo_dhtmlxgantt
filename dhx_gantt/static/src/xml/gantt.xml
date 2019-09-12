@@ -6,8 +6,12 @@
     <t t-name="dhx_gantt.gantt_view">
         <!-- <button class="btn btn-primary">Click Me</button> -->
         <div class="o_dhx_gantt_root">
+
             <div class="o_dhx_gantt_header">
-                <button type="button" class="btn btn-default o_dhx_critical_path">Show Critical Path</button>
+                <div class="o_statusbar_buttons">
+                    <button type="button" class="btn btn-default o_dhx_critical_path">Show Critical Path</button>
+                    <button type="button" class="btn btn-default o_dhx_reschedule">Reschedule</button>
+                </div>
             </div>
             <div class="o_dhx_gantt">
                 <!-- <h1>Hello There</h1>

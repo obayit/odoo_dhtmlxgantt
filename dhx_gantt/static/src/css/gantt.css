@@ -13,9 +13,13 @@
     display: -webkit-box;
     display: -webkit-flex;
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     padding: 0.25rem 0.5rem;
     padding-left: 16px;
     /* border-bottom: 1px solid #ced4da; */
     background-color: white;
+}
+
+.o_dhx_gantt_weekend{
+    background: #f4f7f4 !important;
 }
