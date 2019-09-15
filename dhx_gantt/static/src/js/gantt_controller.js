@@ -11,6 +11,7 @@ var GanttController = AbstractController.extend({
         gantt_create_dp: '_onGanttCreateDataProcessor',
         gantt_config: '_onGanttConfig',
         gantt_show_critical_path: '_onShowCriticalPath',
+        gantt_schedule: '_onGanttSchedule',
     }),
     date_object: new Date(),
     init: function (parent, model, renderer, params) {
@@ -54,7 +55,7 @@ var GanttController = AbstractController.extend({
             if(action == "error"){
                 console.log('nice "an error occured :)"');
             }else{
-                // self.loadGantt();
+                // self.renderGantt();
                 return true;
             }
         });
@@ -90,16 +91,19 @@ var GanttController = AbstractController.extend({
     _onGanttConfig: function(){
         var self = this;
         gantt.attachEvent('onBeforeLightbox', function(id) {
+            // todo: Change this to trigger_up from renderer !!! to avoid errors
             console.log('onBeforeLightbox');
             var task = gantt.getTask(id);
             var title = task.text;
             if(self.form_dialog && !self.form_dialog.isDestroyed()){
                 return false;
             }
+            var session =  self.getSession();
+            var context = session ? session.user_context : {};
             self.form_dialog = new dialogs.FormViewDialog(self, {
                 res_model: self.model.modelName,
                 res_id: parseInt(id, 10).toString() === id ? parseInt(id, 10) : id,
-                context: self.getSession().user_context,
+                context: context,
                 title: title,
                 // view_id: Number(this.open_popup_action),
                 on_saved: function(record, isChanged){
@@ -148,6 +152,12 @@ var GanttController = AbstractController.extend({
     },
     _enableAllButtons: function () {
         this.renderer.enableAllButtons();
+    },
+    _onGanttSchedule: function(){
+        var self = this;
+        this.model.schedule().then(function () {
+            self.renderer.renderGantt();
+        });
     },
 });
 return GanttController;

@@ -11,8 +11,8 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
         ganttApiUrl: "/gantt_api",
         date_object: new Date(),
         events: _.extend({}, AbstractRenderer.prototype.events, {
-            'click button .o_dhx_critical_path': '_onClickCriticalPath',
-            'click button .o_dhx_reschedule': 'onClickReschedule'
+            'click button.o_dhx_critical_path': '_onClickCriticalPath',
+            'click button.o_dhx_reschedule': '_onClickReschedule'
         }),
         init: function (parent, state, params) {
             console.log('init GanttRenderer');
@@ -31,16 +31,21 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
             console.log(params);
         },
         _onClickCriticalPath: function(){
-            console.log('mmmph');
+            console.log('_onClickCriticalPath');
             this.trigger_up('gantt_show_critical_path');
         },
+        _onClickReschedule: function(){
+            console.log('_onClickReschedule');
+            this.trigger_up('gantt_schedule');
+        },
         on_attach_callback: function () {
-            this.loadGantt();
+            this.renderGantt();
             console.log('on_attach_callback');
             console.log(this.$el);
         },
-        loadGantt: function(){
-            console.log('loadGantt');
+        renderGantt: function(){
+            console.log('renderGantt');
+            // gantt.clearAll();
             var self = this;
 
             // Approach 1: use dhx_gantt's dataProcessor to read from server api(controller)
@@ -148,7 +153,7 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
             //     if(action == "error"){
             //         console.log('nice "an error occured :)"');
             //     }else{
-            //         // self.loadGantt();
+            //         // self.renderGantt();
             //         return true;
             //     }
             // });
@@ -181,6 +186,7 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
             console.log('SETTING TO ');
             console.log(this.state.records);
             // gantt.init(this.$el.find('.o_dhx_gantt').get(0));
+            gantt.clearAll();
             gantt.parse(this.state.records);
         },
         _onUpdate: function () {
@@ -190,7 +196,7 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
             // clear the gantt chart, and add the new tasks resulting from the search
             var res = this._super.apply(this, arguments);
             gantt.clearAll();
-            this.loadGantt();
+            this.renderGantt();
             return res;
         },
         disableAllButtons: function(){

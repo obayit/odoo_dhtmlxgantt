@@ -8,17 +8,12 @@
         <div class="o_dhx_gantt_root">
 
             <div class="o_dhx_gantt_header">
-                <div class="o_statusbar_buttons">
+                <div class="o_dhx_gantt_buttons">
                     <button type="button" class="btn btn-default o_dhx_critical_path">Show Critical Path</button>
                     <button type="button" class="btn btn-default o_dhx_reschedule">Reschedule</button>
                 </div>
             </div>
             <div class="o_dhx_gantt">
-                <!-- <h1>Hello There</h1>
-                <table class="o_list_view table table-sm table-striped o_list_view_grouped">
-                    <tbody></tbody>
-                </table>
-                <div class="king_gantt">QWERTY</div> -->
             </div>
         </div>
     </t>

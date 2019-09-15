@@ -35,6 +35,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//header" position="inside">
                     <button name="compute_critical_path" type="object" string="Compute Critical Path"/>
+                    <button name="bf_traversal_schedule" type="object" string="Reschedule mmmph"/>
                 </xpath>
                 <xpath expr="//page" position="before">
                     <page string="Gantt Data">

@@ -156,7 +156,14 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
                 method: 'compute_critical_path',
                 args:[this.res_ids],
             });
-        }
+        },
+        schedule: function(){
+            return this._rpc({
+                model: this.modelName,
+                method: 'bf_traversal_schedule',
+                args:[this.res_ids],
+            });
+        },
     });
     return GanttModel;
 });
