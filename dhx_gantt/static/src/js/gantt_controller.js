@@ -39,16 +39,34 @@ var GanttController = AbstractController.extend({
                     switch(entity){
                         case "task":
                             return self.model.updateTask(data);
+                        break;
                     }
                     // return service.update(data);
+                break;
                 case "create":
                     switch(entity){
                         case "link":
-                            return self.model.createLink(data);
+                            var res_deferred = $.Deferred();
+                            self.model.createLink(data).then(function(res) {
+                                // set res.id as the id returned from the server to update client id :)
+                                res.id = res[0];
+                                res_deferred.resolve(res);
+                            }, function(res){
+                                console.log('create link failed');
+                                console.log(res);
+                                res_deferred.resolve({state: "error"});
+                                gantt.deleteLink(data.id);
+                            });
+                            return res_deferred;
+                        break;
                     }
+                break;
                 case "delete":
-                    self.trigger_up('gantt_data_deleted', {entity, data});
-                    // return service.remove(id);
+                    switch(entity){
+                        case "link":
+                            return self.model.deleteLink(data);
+                    }
+                break;
             }
         });
         dp.attachEvent("onAfterUpdate", function(id, action, tid, response){
@@ -156,6 +174,7 @@ var GanttController = AbstractController.extend({
     _onGanttSchedule: function(){
         var self = this;
         this.model.schedule().then(function () {
+            self.update({reload: true});
             self.renderer.renderGantt();
         });
     },

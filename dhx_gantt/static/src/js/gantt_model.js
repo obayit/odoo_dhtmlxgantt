@@ -54,11 +54,12 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             this.map_progress = params.progress;
             this.map_open = params.open;
             this.map_links_serialized_json = params.links_serialized_json;
+            this.map_total_float = params.total_float;
             this.modelName = params.modelName;
             this.linkModel = params.linkModel;
             return this._load(params);
         },
-        reload: function(id, params){
+        reload: function(params){
             console.log('reload()');
             return this._load(params);
         },
@@ -66,13 +67,18 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             console.log('_load()');
             console.log(this);
             console.log(params);
+            params = params ? params : {};
             this.domain = params.domain || this.domain || [];
             this.modelName = params.modelName || this.modelName;
             var self = this;
+            var fieldNames = [this.map_text, this.map_date_start, this.map_duration];
+            this.map_open && fieldNames.push(this.map_open);
+            this.map_links_serialized_json && fieldNames.push(this.map_links_serialized_json);
+            this.map_total_float && fieldNames.push(this.map_total_float);
             return this._rpc({
                 model: this.modelName,
                 method: 'search_read',
-                fields: ['name', 'date_start', 'planned_duration', 'progress', 'open', 'links_serialized_json'],
+                fields: fieldNames,
                 domain: this.domain,
                 orderBy: [{
                     name: this.map_date_start,
@@ -88,6 +94,7 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             console.log(records);
             var data = [];
             var formatFunc = gantt.date.str_to_date("%Y-%m-%d %h:%i:%s");
+            // todo: convert date from utc to mgt or wtever
             var self = this;
             this.res_ids = [];
             var links = [];
@@ -100,7 +107,8 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
                     duration: record[self.map_duration],
                     progress: record[self.map_progress],
                     open: record[self.map_open],
-                    links_serialized_json: record[self.map_links_serialized_json]
+                    links_serialized_json: record[self.map_links_serialized_json],
+                    total_float: record[self.map_total_float]
                 });
                 links.push.apply(links, JSON.parse(record.links_serialized_json))
             });
@@ -150,6 +158,18 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
                 args: args,
             });
         },
+        deleteLink: function(data){
+            console.log('deleteLink');
+            console.log({data});
+            var args = [];
+
+            args.push([data.id]);
+            return this._rpc({
+                model: this.linkModel,
+                method: 'unlink',
+                args: args,
+            });
+        },
         getCriticalPath: function(){
             return this._rpc({
                 model: this.modelName,
@@ -158,6 +178,7 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             });
         },
         schedule: function(){
+            var self = this;
             return this._rpc({
                 model: this.modelName,
                 method: 'bf_traversal_schedule',

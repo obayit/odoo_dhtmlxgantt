@@ -84,6 +84,7 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
                 {name: "text", tree: true, resize: true},
                 {name: "start_date", align: "center", resize: true},
                 {name: "duration", align: "center"},
+                {name: "total_float", label: "Total Float", align: "center"},
                 // {name: "add", width: 44, min_width: 44, max_width: 44}
             ]
             // [

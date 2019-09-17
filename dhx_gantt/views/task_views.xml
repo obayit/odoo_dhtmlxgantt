@@ -14,6 +14,7 @@
                     progress="progress"
                     open="open"
                     links_serialized_json="links_serialized_json"
+                    total_float="float_time"
                     link_model="project.depending.tasks"
                 />
             </field>
@@ -35,7 +36,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//header" position="inside">
                     <button name="compute_critical_path" type="object" string="Compute Critical Path"/>
-                    <button name="bf_traversal_schedule" type="object" string="Reschedule mmmph"/>
+                    <button name="bf_traversal_total_float" type="object" string="Total Float mmmph"/>
                 </xpath>
                 <xpath expr="//page" position="before">
                     <page string="Gantt Data">

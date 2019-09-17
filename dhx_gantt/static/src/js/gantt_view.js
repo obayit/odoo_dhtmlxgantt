@@ -34,6 +34,7 @@ odoo.define('dhx_gantt.GanttView', function (require) {
             this.loadParams.progress = this.arch.attrs.progress;
             this.loadParams.text = this.arch.attrs.text;
             this.loadParams.links_serialized_json = this.arch.attrs.links_serialized_json;
+            this.loadParams.total_float = this.arch.attrs.total_float;
             this.loadParams.modelName = params.modelName;
             this.loadParams.linkModel = this.arch.attrs.link_model;
 
