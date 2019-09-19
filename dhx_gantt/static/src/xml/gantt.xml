@@ -5,15 +5,19 @@
     <!-- <t t-name="dhx_gantt.gantt_action"> -->
     <t t-name="dhx_gantt.gantt_view">
         <!-- <button class="btn btn-primary">Click Me</button> -->
-        <div class="o_dhx_gantt_root">
+        <div class="table o_dhx_gantt_root">
+            <div class="row o_dhx_gantt_header navbar-nav">
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-secondary o_dhx_critical_path o_dhx_button o_statusbar_buttons">Show Critical Path</button>
+                    <button type="button" class="btn btn-secondary o_dhx_reschedule o_dhx_button o_statusbar_buttons">Reschedule</button>
+                </div>
+                <div class="col-md-6" >
+                    <button type="button" class="btn btn-secondary o_dhx_zoom_out o_dhx_button_right">Zoom Out</button>
 
-            <div class="o_dhx_gantt_header">
-                <div class="o_dhx_gantt_buttons">
-                    <button type="button" class="btn btn-default o_dhx_critical_path">Show Critical Path</button>
-                    <button type="button" class="btn btn-default o_dhx_reschedule">Reschedule</button>
+                    <button type="button" class="btn btn-secondary o_dhx_zoom_in o_dhx_button_right">Zoom In</button>
                 </div>
             </div>
-            <div class="o_dhx_gantt">
+            <div class="row o_dhx_gantt">
             </div>
         </div>
     </t>

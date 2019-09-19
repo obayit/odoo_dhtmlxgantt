@@ -12,7 +12,9 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
         date_object: new Date(),
         events: _.extend({}, AbstractRenderer.prototype.events, {
             'click button.o_dhx_critical_path': '_onClickCriticalPath',
-            'click button.o_dhx_reschedule': '_onClickReschedule'
+            'click button.o_dhx_reschedule': '_onClickReschedule',
+            'click button.o_dhx_zoom_in': '_onClickZoomIn',
+            'click button.o_dhx_zoom_out': '_onClickZoomOut'
         }),
         init: function (parent, state, params) {
             console.log('init GanttRenderer');
@@ -37,6 +39,14 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
         _onClickReschedule: function(){
             console.log('_onClickReschedule');
             this.trigger_up('gantt_schedule');
+        },
+        _onClickZoomIn: function(){
+            console.log('_onClickZoomIn');
+            gantt.ext.zoom.zoomIn();
+        },
+        _onClickZoomOut: function(){
+            console.log('_onClickZoomOut');
+            gantt.ext.zoom.zoomOut();
         },
         on_attach_callback: function () {
             this.renderGantt();
@@ -97,10 +107,10 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
  
 
             gantt.setWorkTime({day:5, hours: false });
-            gantt.setWorkTime({day:0, hours: [8,16] });
-            gantt.setWorkTime({hours: [8,16]});
+            gantt.setWorkTime({day:0, hours: true });
+            gantt.setWorkTime({hours: [0,23]});
             this.trigger_up('gantt_config');
-            gantt.templates.timeline_cell_class = function(task,date){
+            gantt.templates.timeline_cell_class = function(task, date){
                 // if(date.getDay()==5||date.getDay()==6){ 
                 if(!gantt.isWorkTime({task:task, date: date})){
                     return "o_dhx_gantt_weekend";
@@ -188,6 +198,72 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
             console.log(this.state.records);
             // gantt.init(this.$el.find('.o_dhx_gantt').get(0));
             gantt.clearAll();
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+             var zoomConfig = {
+                levels: [
+                    {
+                        name:"day",
+                        scale_height: 27,
+                        min_column_width:80,
+                        scales:[
+                            {unit: "day", step: 1, format: "%d %M"}
+                        ]
+                    },
+                    {
+                        name:"week",
+                        scale_height: 50,
+                        min_column_width:50,
+                        scales:[
+                            {unit: "week", step: 1, format: function (date) {
+                                var dateToStr = gantt.date.date_to_str("%d %M");
+                                var endDate = gantt.date.add(date, -6, "day");
+                                var weekNum = gantt.date.date_to_str("%W")(date);
+                                return "#" + weekNum + ", " + dateToStr(date) + " - " + dateToStr(endDate);
+                            }},
+                            {unit: "day", step: 1, format: "%j %D"}
+                        ]
+                    },
+                    {
+                        name:"month",
+                        scale_height: 50,
+                        min_column_width:120,
+                        scales:[
+                            {unit: "month", format: "%F, %Y"},
+                            {unit: "week", format: "Week #%W"}
+                        ]
+                    },
+                    {
+                        name:"quarter",
+                        height: 50,
+                        min_column_width:90,
+                        scales:[
+                            {unit: "month", step: 1, format: "%M"},
+                            {
+                                unit: "quarter", step: 1, format: function (date) {
+                                    var dateToStr = gantt.date.date_to_str("%M");
+                                    var endDate = gantt.date.add(gantt.date.add(date, 3, "month"), -1, "day");
+                                    return dateToStr(date) + " - " + dateToStr(endDate);
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        name:"year",
+                        scale_height: 50,
+                        min_column_width: 30,
+                        scales:[
+                            {unit: "year", step: 1, format: "%Y"}
+                        ]
+                    }
+                ]
+            };
+
+            gantt.ext.zoom.init(zoomConfig);
+            gantt.ext.zoom.setLevel("week");
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
             gantt.parse(this.state.records);
         },
         _onUpdate: function () {

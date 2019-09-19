@@ -9,17 +9,28 @@
 }
 
 .o_dhx_gantt_header{
-    position: relative;
+    background-color: white;
+   /* position: relative;
     display: -webkit-box;
     display: -webkit-flex;
-    display: flex;
+    display: flex; */
     /* justify-content: space-between; */
-    padding: 0.25rem 0.5rem;
+    /* padding: 0.25rem 0.5rem;
     padding-left: 16px;
     border-bottom: 1px solid #ced4da;
-    background-color: white;
+    background-color: white; */
 }
-
+.o_dhx_button{
+    margin-left:10px;
+    margin-top:4px;
+    margin-bottom:4px;
+}
+.o_dhx_button_right{
+    float:right;
+    margin-right:10px;
+    margin-top:4px;
+    margin-bottom:4px;
+}
 .o_dhx_gantt_weekend{
     background: #f4f7f4 !important;
 }

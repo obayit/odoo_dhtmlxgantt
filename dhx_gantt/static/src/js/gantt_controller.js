@@ -38,7 +38,15 @@ var GanttController = AbstractController.extend({
                     // return self.trigger_up('gantt_data_updated', {entity, data});
                     switch(entity){
                         case "task":
-                            return self.model.updateTask(data);
+                            var res_deferred = $.Deferred();
+                            self.model.updateTask(data).then(function(res) {
+                                res_deferred.resolve(res.result);
+                                self.update({});
+                            }, function(res){
+                                res_deferred.resolve({state: "error"});
+                                gantt.deleteLink(data.id);
+                            });
+                            return res_deferred;
                         break;
                     }
                     // return service.update(data);

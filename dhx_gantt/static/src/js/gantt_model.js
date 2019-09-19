@@ -93,17 +93,20 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             console.log('convertData');
             console.log(records);
             var data = [];
-            var formatFunc = gantt.date.str_to_date("%Y-%m-%d %h:%i:%s");
+            var formatFunc = gantt.date.str_to_date("%Y-%m-%d %h:%i:%s", true);
             // todo: convert date from utc to mgt or wtever
             var self = this;
             this.res_ids = [];
             var links = [];
             records.forEach(function(record){ 
                 self.res_ids.push(record[self.map_id]);
+                // value.add(-self.getSession().getTZOffset(value), 'minutes')
+                // data.timezone_offset = (-self.date_object.getTimezoneOffset());
+                var datetime = formatFunc(record[self.map_date_start]);
                 data.push({
                     id: record[self.map_id],
                     text: record[self.map_text],
-                    start_date: formatFunc(record[self.map_date_start]),
+                    start_date: datetime,
                     duration: record[self.map_duration],
                     progress: record[self.map_progress],
                     open: record[self.map_open],
@@ -129,7 +132,9 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
 
             var formatFunc = gantt.date.str_to_date("%d-%m-%Y %h:%i");
             var date_start = formatFunc(data.start_date);
-            values[this.map_date_start] = time.datetime_to_str(date_start);
+            values[this.map_date_start] = JSON.stringify(date_start);
+            console.log('time');
+            console.log(time.datetime_to_str(new Date("2019-09-07T20:00:00.000Z")));
             args.push(id);
             args.push(values)
             console.log({values});
