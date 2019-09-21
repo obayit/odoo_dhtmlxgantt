@@ -1,11 +1,14 @@
-.o_dhx_gantt{
-    width: 100%;
+.o_dhx_gantt_root{
+    /* width: 100%; */
     height: 100%;
 }
 
-.o_dhx_gantt_root{
-    width: 100%;
+.o_dhx_gantt{
+    /* width: 100%; */
     height: 100%;
+}
+
+.o_dhx_gantt.gantt_container{
 }
 
 .o_dhx_gantt_header{

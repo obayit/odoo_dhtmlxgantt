@@ -1,4 +1,3 @@
-var ggc = false;
 odoo.define('dhx_gantt.GanttController', function (require) {
     "use strict";
 var AbstractController = require('web.AbstractController');
@@ -16,7 +15,6 @@ var GanttController = AbstractController.extend({
     date_object: new Date(),
     init: function (parent, model, renderer, params) {
         console.log('controller init');
-        ggc = this;
         this._super.apply(this, arguments);
     },
     _onGanttCreateDataProcessor: function(event){

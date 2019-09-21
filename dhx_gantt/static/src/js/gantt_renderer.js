@@ -3,7 +3,7 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
 
     var AbstractRenderer = require('web.AbstractRenderer');
     // var BasicRenderer = require('web.BasicRenderer');
-    var dialogs = require('web.view_dialogs');
+    // var dialogs = require('web.view_dialogs');
     // var core = require('web.core');
 
     var GanttRenderer = AbstractRenderer.extend({
@@ -263,7 +263,16 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
             gantt.ext.zoom.init(zoomConfig);
             gantt.ext.zoom.setLevel("week");
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            var rootHeight = this.$el.height();
+            var headerHeight = this.$('.o_dhx_gantt_header').height();
+            this.$('.o_dhx_gantt').height(rootHeight - headerHeight);
 
+            gantt.attachEvent('onBeforeGanttRender', function() {
+                console.log('tadaaaa, onBeforeGanttRender');
+                var rootHeight = self.$el.height();
+                var headerHeight = self.$('.o_dhx_gantt_header').height();
+                self.$('.o_dhx_gantt').height(rootHeight - headerHeight);
+            });
             gantt.parse(this.state.records);
         },
         _onUpdate: function () {

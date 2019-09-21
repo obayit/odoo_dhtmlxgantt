@@ -59,7 +59,7 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             this.linkModel = params.linkModel;
             return this._load(params);
         },
-        reload: function(params){
+        reload: function(id, params){
             console.log('reload()');
             return this._load(params);
         },
@@ -111,7 +111,7 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
                     progress: record[self.map_progress],
                     open: record[self.map_open],
                     links_serialized_json: record[self.map_links_serialized_json],
-                    total_float: record[self.map_total_float]
+                    total_float: record[self.map_total_float],
                 });
                 links.push.apply(links, JSON.parse(record.links_serialized_json))
             });
