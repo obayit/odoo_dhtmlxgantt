@@ -9,6 +9,7 @@
     'description': """
         
     """,
+    "category": "Project Management",
 
     'author': "Ubay Abdelgadir",
     'website': "http://www.yourcompany.com",
