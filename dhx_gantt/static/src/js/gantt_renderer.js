@@ -29,6 +29,7 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
             this.map_progress = params.map_progress;
             this.map_links_serialized_json = params.map_links_serialized_json;
             this.link_model = params.link_model;
+            this.is_total_float = params.is_total_float;
             console.log('params');
             console.log(params);
 
@@ -48,9 +49,12 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
                 {name: "text", tree: true, resize: true},
                 {name: "start_date", align: "center", resize: true},
                 {name: "duration", align: "center"},
-                {name: "total_float", label: "Total Float", align: "center"},
                 // {name: "add", width: 44, min_width: 44, max_width: 44}
             ]
+            if(this.is_total_float){
+                gantt.config.columns.push({name: "total_float", label: "Total Float", align: "center"})
+            }
+
             gantt.setWorkTime({day:5, hours: false });
             gantt.setWorkTime({day:0, hours: true });
             gantt.setWorkTime({hours: [0,23]});

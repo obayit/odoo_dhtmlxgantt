@@ -62,6 +62,8 @@ odoo.define('dhx_gantt.GanttView', function (require) {
             this.rendererParams.map_text = this.arch.attrs.text;
             this.rendererParams.map_links_serialized_json = this.arch.attrs.links_serialized_json;
             this.rendererParams.link_model = this.arch.attrs.link_model;
+            this.rendererParams.link_model = this.arch.attrs.link_model;
+            this.rendererParams.is_total_float = this.arch.attrs.total_float;
 
         },
         _processFieldsView: function (fieldsView, viewType) {
