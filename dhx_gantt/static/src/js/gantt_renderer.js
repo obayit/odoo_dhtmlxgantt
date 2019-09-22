@@ -162,6 +162,13 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
                 this.events_set = true;
             }
             gantt.clearAll();
+            var date_to_str = gantt.date.date_to_str(gantt.config.task_date);
+            gantt.addMarker({
+                start_date: new Date(), //a Date object that sets the marker's date
+                css: "today", //a CSS class applied to the marker
+                text: "Today", //the marker title
+                title:date_to_str( new Date()) // the marker's tooltip
+            });
             var rootHeight = this.$el.height();
             var headerHeight = this.$('.o_dhx_gantt_header').height();
             this.$('.o_dhx_gantt').height(rootHeight - headerHeight);
