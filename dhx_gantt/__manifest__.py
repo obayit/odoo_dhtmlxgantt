@@ -40,6 +40,6 @@
         "static/src/xml/gantt.xml",
     ],
     'images': [
-        'description/screenshot_1.png'
+        'images/screenshot_1.png'
     ]
 }
