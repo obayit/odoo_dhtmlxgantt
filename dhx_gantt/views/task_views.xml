@@ -50,5 +50,10 @@
             </field>
         </record>
 
+        <record id="project.act_project_project_2_project_task_all" model="ir.actions.act_window">
+            <field name="view_mode">kanban,tree,form,calendar,timeline,pivot,graph,activity,dhx_gantt</field>
+        </record>
+        
+
     </data>
 </odoo>
