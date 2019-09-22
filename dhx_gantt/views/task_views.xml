@@ -4,6 +4,7 @@
         <record id="task_gantt_view" model="ir.ui.view">
             <field name="name">Tasks Gantt</field>
             <field name="model">project.task</field>
+            <field name="priority">10</field>
             <field name="type">dhx_gantt</field>
             <field name="arch" type="xml">
                 <dhx_gantt
@@ -11,41 +12,32 @@
                     text="name"
                     date_start="date_start"
                     duration="planned_duration"
-                    progress="progress"
-                    open="open"
                     links_serialized_json="links_serialized_json"
+                    link_model="project.depending.tasks"
                 />
             </field>
         </record>
-
-        <record id="action_task_gantt" model="ir.actions.act_window">
-            <field name="name">Tasks</field>
-            <field name="res_model">project.task</field>
-            <field name="view_mode">dhx_gantt</field>
-        </record>
-
-        <menuitem name="All Tasks Gantt" id="menu_project_management" parent="project.menu_main_pm"
-            action="action_task_gantt" sequence="2"/>
 
         <record id="view_task_gantt_data_form" model="ir.ui.view">
             <field name="name">project.task.gant.data.form</field>
             <field name="model">project.task</field>
             <field name="inherit_id" ref="project.view_task_form2"/>
             <field name="arch" type="xml">
-                <xpath expr="//header" position="inside">
-                    <button name="compute_critical_path" type="object" string="Compute Critical Path"/>
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="planned_duration"/>
+                    <field name="lag_time"/>
                 </xpath>
-                <xpath expr="//page" position="before">
-                    <page string="Gantt Data">
-                        <group>
-                            <group>
-                                <field name="date_start"/>
-                                <!-- <field name="date_end"/> -->
-                                <field name="planned_duration"/>
-                                <field name="progress"/>
-                                <field name="is_open"/>
-                            </group>
-                        </group>
+                <xpath expr="//page[@name='description_page']" position="after">
+                    <page string="Dependencies">
+                        <separator string="Predecessors"/>
+                        <field name="dependency_task_ids">
+                            <tree editable="buttom">
+                                <field name="project_id" invisible="1"/>
+                                <field name="task_id" domain="[('project_id', '=', project_id)]"/>
+                                <field name="relation_type"/>
+                            </tree>
+                        </field>
+                        <separator string="Successors"/>
                         <field name="depending_task_ids">
                             <tree editable="buttom">
                                 <field name="project_id" invisible="1"/>
