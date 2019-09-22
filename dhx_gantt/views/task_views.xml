@@ -1,9 +1,10 @@
 <odoo>
     <data>
 
-        <!-- <record id="task_gantt_view" model="ir.ui.view">
+        <record id="task_gantt_view" model="ir.ui.view">
             <field name="name">Tasks Gantt</field>
             <field name="model">project.task</field>
+            <field name="priority">10</field>
             <field name="type">dhx_gantt</field>
             <field name="arch" type="xml">
                 <dhx_gantt
@@ -11,10 +12,7 @@
                     text="name"
                     date_start="date_start"
                     duration="planned_duration"
-                    progress="progress"
-                    open="open"
                     links_serialized_json="links_serialized_json"
-                    total_float="float_time"
                     link_model="project.depending.tasks"
                 />
             </field>
@@ -25,28 +23,21 @@
             <field name="model">project.task</field>
             <field name="inherit_id" ref="project.view_task_form2"/>
             <field name="arch" type="xml">
-                <xpath expr="//header" position="inside">
-                    <button name="compute_critical_path" type="object" string="Compute Critical Path"/>
-                    <button name="bf_traversal_total_float" type="object" string="Total Float mmmph"/>
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="planned_duration"/>
+                    <field name="lag_time"/>
                 </xpath>
-                <xpath expr="//page" position="before">
-                    <page string="Gantt Data">
-                        <group>
-                            <group>
-                                <!-#- <field name="date_start"/>
-                                <field name="planned_duration"/> -#->
-                                <field name="progress"/>
-                                <field name="is_open"/>
-                            </group>
-                        </group>
+                <xpath expr="//page[@name='description_page']" position="after">
+                    <page string="Dependencies">
+                        <separator string="Predecessors"/>
                         <field name="dependency_task_ids">
                             <tree editable="buttom">
                                 <field name="project_id" invisible="1"/>
                                 <field name="task_id" domain="[('project_id', '=', project_id)]"/>
-                                <field name="depending_task_id" domain="[('project_id', '=', project_id)]"/>
                                 <field name="relation_type"/>
                             </tree>
                         </field>
+                        <separator string="Successors"/>
                         <field name="depending_task_ids">
                             <tree editable="buttom">
                                 <field name="project_id" invisible="1"/>
@@ -57,7 +48,7 @@
                     </page>
                 </xpath>
             </field>
-        </record> -->
+        </record>
 
     </data>
 </odoo>

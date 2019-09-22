@@ -18,7 +18,12 @@ var GanttController = AbstractController.extend({
         this._super.apply(this, arguments);
     },
     _onGanttCreateDataProcessor: function(event){
+        console.log('_onGanttCreateDataProcessor');
         var self = this;
+        if(this.dp_created){
+            return;
+        }
+        this.dp_created = true;
         var dp = gantt.createDataProcessor(function(entity, action, data, id){
             console.log('createDataProcessor');
             console.log('entity');
@@ -114,6 +119,10 @@ var GanttController = AbstractController.extend({
     // }
     _onGanttConfig: function(){
         var self = this;
+        if(this.gantt_configured){
+            return;
+        }
+        this.gantt_configured = true;
         gantt.attachEvent('onBeforeLightbox', function(id) {
             // todo: Change this to trigger_up from renderer !!! to avoid errors
             console.log('onBeforeLightbox');
