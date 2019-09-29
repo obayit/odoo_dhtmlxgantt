@@ -11,7 +11,7 @@
     """,
 
     'author': "Ubay Abdelgadir",
-    'website': "http://www.yourcompany.com",
+    'website': "https://github.com/obayit/odoo_dhtmlxgantt",
     'license': "GPL-2",
 
     # Categories can be used to filter modules in modules listing
