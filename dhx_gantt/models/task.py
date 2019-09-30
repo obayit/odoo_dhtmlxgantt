@@ -259,13 +259,13 @@ class Task(models.Model):
                         set_date_end = getattr(self, "set_date_end", None)
                         if callable(set_date_end):
                             self.set_date_end()
-                        # print('setting date_start to {0}'.format(self.date_start))
+                        print('setting date_start to {0}'.format(self.date_start))
                     else:
                         self.date_start = todo_date_start
                         set_date_end = getattr(self, "set_date_end", None)
                         if callable(set_date_end):
                             self.set_date_end()
-                        # print('setting date_start to {0}'.format(self.date_start))
+                        print('setting date_start to {0}'.format(self.date_start))
             elif parent.relation_type == "3":  # Start to Finish
                 if date_end:
                     todo_date_start = subtract_business_days(date_start, self.planned_duration - self.lag_time)

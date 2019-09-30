@@ -14,23 +14,24 @@ var GanttController = AbstractController.extend({
     }),
     date_object: new Date(),
     init: function (parent, model, renderer, params) {
-        console.log('controller init');
+        // console.log('controller init');
         this._super.apply(this, arguments);
+        this.projectModel = 'project.project';  // todo: read from view arch
     },
     _onGanttCreateDataProcessor: function(event){
-        console.log('_onGanttCreateDataProcessor');
+        // console.log('_onGanttCreateDataProcessor');
         var self = this;
         if(this.dp_created){
             return;
         }
         this.dp_created = true;
         var dp = gantt.createDataProcessor(function(entity, action, data, id){
-            console.log('createDataProcessor');
-            console.log('entity');
-            console.log({entity});
-            console.log({action});
-            console.log({data});
-            console.log({id});
+            // console.log('createDataProcessor');
+            // console.log('entity');
+            // console.log({entity});
+            // console.log({action});
+            // console.log({data});
+            // console.log({id});
             // const services = {
             //     "task": this.taskService,
             //     "link": this.linkService
@@ -63,8 +64,8 @@ var GanttController = AbstractController.extend({
                                 res.id = res[0];
                                 res_deferred.resolve(res);
                             }, function(res){
-                                console.log('create link failed');
-                                console.log(res);
+                                // console.log('create link failed');
+                                // console.log(res);
                                 res_deferred.resolve({state: "error"});
                                 gantt.deleteLink(data.id);
                             });
@@ -82,14 +83,14 @@ var GanttController = AbstractController.extend({
         });
         dp.attachEvent("onAfterUpdate", function(id, action, tid, response){
             if(action == "error"){
-                console.log('nice "an error occured :)"');
+                // console.log('nice "an error occured :)"');
             }else{
                 // self.renderGantt();
                 return true;
             }
         });
         dp.attachEvent("onBeforeUpdate", function(id, state, data){
-            console.log('BeforeUpdate. YAY!');
+            // console.log('BeforeUpdate. YAY!');
             data.csrf_token = core.csrf_token;
             data.model_name = self.modelName;
             data.timezone_offset = (-self.date_object.getTimezoneOffset());
@@ -101,8 +102,8 @@ var GanttController = AbstractController.extend({
             data.map_open = self.map_open;
             data.map_progress = self.map_progress;
             data.link_model = self.link_model;
-            console.log('data are ');
-            console.log(data);
+            // console.log('data are ');
+            // console.log(data);
             return true;
         });
     },
@@ -125,17 +126,20 @@ var GanttController = AbstractController.extend({
         this.gantt_configured = true;
         gantt.attachEvent('onBeforeLightbox', function(id) {
             // todo: Change this to trigger_up from renderer !!! to avoid errors
-            console.log('onBeforeLightbox');
+            // console.log('onBeforeLightbox');
             var task = gantt.getTask(id);
-            var title = task.text;
+            var title = 'Open: ' + task.text;
             if(self.form_dialog && !self.form_dialog.isDestroyed()){
                 return false;
             }
             var session =  self.getSession();
             var context = session ? session.user_context : {};
+            var modelName = task.isProject && self.projectModel || self.model.modelName;
+            var target_id = task.isProject && task.serverId || task.id;
+            var res_id = parseInt(target_id, 10).toString() === target_id ? parseInt(target_id, 10) : target_id;
             self.form_dialog = new dialogs.FormViewDialog(self, {
-                res_model: self.model.modelName,
-                res_id: parseInt(id, 10).toString() === id ? parseInt(id, 10) : id,
+                res_model: modelName,
+                res_id: res_id,
                 context: context,
                 title: title,
                 // view_id: Number(this.open_popup_action),
@@ -147,8 +151,8 @@ var GanttController = AbstractController.extend({
         });
     },
     write_completed: function (record, isChanged) {
-        console.log('write_completed');
-        console.log(this.renderer.domain);
+        // console.log('write_completed');
+        // console.log(this.renderer.domain);
         if(isChanged){
             var params = {
                 context: this.context,
@@ -174,8 +178,8 @@ var GanttController = AbstractController.extend({
 
         this._disableAllButtons();
         def = self.model.getCriticalPath().then(function (result) {
-            console.log('critical path result');
-            console.log(result);
+            // console.log('critical path result');
+            // console.log(result);
             self.renderer.renderCriticalTasks(result);
         });
         def.always(this._enableAllButtons.bind(this));

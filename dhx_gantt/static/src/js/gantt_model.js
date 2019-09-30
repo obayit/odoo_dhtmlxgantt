@@ -7,9 +7,9 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
     var GanttModel = AbstractModel.extend({
         get: function(){
         // get: function(id, options){
-            console.log('get()');
-            console.log(this.records);
-            console.log('Basic.get()');
+            // console.log('get()');
+            // console.log(this.records);
+            // console.log('Basic.get()');
             // options = options ? options : {};
             // options.raw = false;  // prevent x2many field errors on BasicModel's get()
             // var upperRes = this._super.apply(this, arguments);
@@ -31,8 +31,8 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             //     links.push.apply(links, JSON.parse(record.links_serialized_json))
             // });
             // console.log(data);
-            console.log('links');
-            console.log(links);
+            // console.log('links');
+            // console.log(links);
             var gantt_model = {
                 data: this.records,
                 links: this.links,
@@ -40,13 +40,13 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             var res = {
                 records: gantt_model,
             };
-            console.log('get() RETURNING');
-            console.log(res);
+            // console.log('get() RETURNING');
+            // console.log(res);
             return res;
         },
         load: function(params){
-            console.log('load()');
-            console.log({params});
+            // console.log('load()');
+            // console.log({params});
             this.map_id = params.id_field;
             this.map_text = params.text;
             this.map_date_start = params.date_start;
@@ -55,18 +55,19 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             this.map_open = params.open;
             this.map_links_serialized_json = params.links_serialized_json;
             this.map_total_float = params.total_float;
+            this.map_parent = 'project_id';
             this.modelName = params.modelName;
             this.linkModel = params.linkModel;
             return this._load(params);
         },
         reload: function(id, params){
-            console.log('reload()');
+            // console.log('reload()');
             return this._load(params);
         },
         _load: function(params){
-            console.log('_load()');
-            console.log(this);
-            console.log(params);
+            // console.log('_load()');
+            // console.log(this);
+            // console.log(params);
             params = params ? params : {};
             this.domain = params.domain || this.domain || [];
             this.modelName = params.modelName || this.modelName;
@@ -75,6 +76,7 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             this.map_open && fieldNames.push(this.map_open);
             this.map_links_serialized_json && fieldNames.push(this.map_links_serialized_json);
             this.map_total_float && fieldNames.push(this.map_total_float);
+            this.map_parent && fieldNames.push(this.map_parent);
             return this._rpc({
                 model: this.modelName,
                 method: 'search_read',
@@ -90,8 +92,8 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             });
         },
         convertData: function(records){
-            console.log('convertData');
-            console.log(records);
+            // console.log('convertData');
+            // console.log(records);
             var data = [];
             var formatFunc = gantt.date.str_to_date("%Y-%m-%d %h:%i:%s", true);
             // todo: convert date from utc to mgt or wtever
@@ -103,24 +105,46 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
                 // value.add(-self.getSession().getTZOffset(value), 'minutes')
                 // data.timezone_offset = (-self.date_object.getTimezoneOffset());
                 var datetime = formatFunc(record[self.map_date_start]);
-                data.push({
-                    id: record[self.map_id],
-                    text: record[self.map_text],
-                    start_date: datetime,
-                    duration: record[self.map_duration],
-                    progress: record[self.map_progress],
-                    open: record[self.map_open],
-                    links_serialized_json: record[self.map_links_serialized_json],
-                    total_float: record[self.map_total_float],
-                });
+                var task = {};
+                if(self.map_parent){
+                    var projectFound = data.find(function(element) {
+                        return element.isProject && element.serverId == record[self.map_parent][0];
+                    });
+                    if(!projectFound){
+                        // console.log('project not found');
+                        var project = {
+                            id: _.uniqueId('project-'),
+                            serverId: record[self.map_parent][0],
+                            text: record[self.map_parent][1],
+                            isProject: true,
+                        }
+                        task.parent = project.id;
+                        data.push(project);
+                    }else{
+                        task.parent = projectFound.id;
+                    }
+                }
+                task.id = record[self.map_id];
+                task.text = record[self.map_text];
+                task.start_date = datetime;
+                task.duration = record[self.map_duration];
+                task.progress = record[self.map_progress];
+                task.open = record[self.map_open];
+                task.links_serialized_json = record[self.map_links_serialized_json];
+                task.total_float = record[self.map_total_float];
+
+                data.push(task);
                 links.push.apply(links, JSON.parse(record.links_serialized_json))
             });
             this.records = data;
             this.links = links;
         },
         updateTask: function(data){
-            console.log('updateTask');
-            console.log({data});
+            if(data.isProject){
+                return $.when();
+            }
+            // console.log('updateTask');
+            // console.log({data});
             var args = [];
             var values = {};
 
@@ -133,12 +157,12 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             var formatFunc = gantt.date.str_to_date("%d-%m-%Y %h:%i");
             var date_start = formatFunc(data.start_date);
             values[this.map_date_start] = JSON.stringify(date_start);
-            console.log('time');
-            console.log(time.datetime_to_str(new Date("2019-09-07T20:00:00.000Z")));
+            // console.log('time');
+            // console.log(time.datetime_to_str(new Date("2019-09-07T20:00:00.000Z")));
             args.push(id);
             args.push(values)
-            console.log({values});
-            console.log({args});
+            // console.log({values});
+            // console.log({args});
             return this._rpc({
                 model: this.modelName,
                 method: 'write',
@@ -146,8 +170,8 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             });
         },
         createLink: function(data){
-            console.log('createLink');
-            console.log({data});
+            // console.log('createLink');
+            // console.log({data});
             var args = [];
             var values = {};
 
@@ -164,8 +188,8 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             });
         },
         deleteLink: function(data){
-            console.log('deleteLink');
-            console.log({data});
+            // console.log('deleteLink');
+            // console.log({data});
             var args = [];
 
             args.push([data.id]);

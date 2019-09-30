@@ -17,7 +17,7 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
             'click button.o_dhx_zoom_out': '_onClickZoomOut'
         }),
         init: function (parent, state, params) {
-            console.log('init GanttRenderer');
+            // console.log('init GanttRenderer');
             this._super.apply(this, arguments);
             this.initDomain = params.initDomain;
             this.modelName = params.modelName;
@@ -30,8 +30,8 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
             this.map_links_serialized_json = params.map_links_serialized_json;
             this.link_model = params.link_model;
             this.is_total_float = params.is_total_float;
-            console.log('params');
-            console.log(params);
+            // console.log('params');
+            // console.log(params);
 
             var self = this;
             gantt.templates.scale_cell_class = function(date){
@@ -42,8 +42,8 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
 
             gantt.config.work_time = true;
             gantt.config.skip_off_time = true;
-            console.log('columns');
-            console.log(gantt.config.columns);
+            // console.log('columns');
+            // console.log(gantt.config.columns);
 
             gantt.config.columns = [
                 {name: "text", tree: true, resize: true},
@@ -126,35 +126,35 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
             gantt.ext.zoom.setLevel("week");
         },
         _onClickCriticalPath: function(){
-            console.log('_onClickCriticalPath');
+            // console.log('_onClickCriticalPath');
             this.trigger_up('gantt_show_critical_path');
         },
         _onClickReschedule: function(){
-            console.log('_onClickReschedule');
+            // console.log('_onClickReschedule');
             this.trigger_up('gantt_schedule');
         },
         _onClickZoomIn: function(){
-            console.log('_onClickZoomIn');
+            // console.log('_onClickZoomIn');
             gantt.ext.zoom.zoomIn();
         },
         _onClickZoomOut: function(){
-            console.log('_onClickZoomOut');
+            // console.log('_onClickZoomOut');
             gantt.ext.zoom.zoomOut();
         },
         on_attach_callback: function () {
             this.renderGantt();
-            console.log('on_attach_callback');
-            console.log(this.$el);
+            // console.log('on_attach_callback');
+            // console.log(this.$el);
         },
         renderGantt: function(){
-            console.log('renderGantt');
+            // console.log('renderGantt');
             gantt.init(this.$('.o_dhx_gantt').get(0));
             this.trigger_up('gantt_config');
             this.trigger_up('gantt_create_dp');
             if(!this.events_set){
                 var self = this;
                 gantt.attachEvent('onBeforeGanttRender', function() {
-                    console.log('tadaaaa, onBeforeGanttRender');
+                    // console.log('tadaaaa, onBeforeGanttRender');
                     var rootHeight = self.$el.height();
                     var headerHeight = self.$('.o_dhx_gantt_header').height();
                     self.$('.o_dhx_gantt').height(rootHeight - headerHeight);
@@ -173,6 +173,15 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
             var headerHeight = this.$('.o_dhx_gantt_header').height();
             this.$('.o_dhx_gantt').height(rootHeight - headerHeight);
             gantt.parse(this.state.records);
+            this.openAll();
+        },
+        openAll: function()
+        {
+            gantt.eachTask(function(task){
+                if (task.$level == 0) { //is a project, not a task
+                    gantt.open(task.id);
+                }
+            });
         },
         _onUpdate: function () {
         },
@@ -185,11 +194,11 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
             return res;
         },
         disableAllButtons: function(){
-            console.log('disableAllButtons:: Renderer');
+            // console.log('disableAllButtons:: Renderer');
             this.$('.o_dhx_gantt_header').find('button').prop('disabled', true);
         },
         enableAllButtons: function(){
-            console.log('enableAllButtons:: Renderer');
+            // console.log('enableAllButtons:: Renderer');
             this.$('.o_dhx_gantt_header').find('button').prop('disabled', false);
         },
         undoRenderCriticalTasks: function(data){

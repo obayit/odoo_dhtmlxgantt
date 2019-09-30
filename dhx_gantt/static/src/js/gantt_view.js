@@ -17,14 +17,14 @@ odoo.define('dhx_gantt.GanttView', function (require) {
             Renderer: GanttRenderer,
         }),
         init: function (viewInfo, params) {
-            console.log('init View');
-            console.log(this.arch);
-            console.log({viewInfo});
-            console.log('params');
-            console.log(params);
+            // console.log('init View');
+            // console.log(this.arch);
+            // console.log({viewInfo});
+            // console.log('params');
+            // console.log(params);
             this._super.apply(this, arguments);
-            console.log('loadParams after apply super');
-            console.log(this.loadParams);
+            // console.log('loadParams after apply super');
+            // console.log(this.loadParams);
             this.loadParams.type = 'list';
 
             this.loadParams.id_field = this.arch.attrs.id_field;
@@ -48,9 +48,9 @@ odoo.define('dhx_gantt.GanttView', function (require) {
                 this.arch.attrs.text,
                 this.arch.attrs.links_serialized_json,
             ];
-            console.log('infamous');
-            console.log(this.loadParams.fields);
-            console.log(this.loadParams.fieldNames);
+            // console.log('infamous');
+            // console.log(this.loadParams.fields);
+            // console.log(this.loadParams.fieldNames);
 
             this.rendererParams.initDomain = params.domain;
             this.rendererParams.modelName = params.modelName;
@@ -67,15 +67,15 @@ odoo.define('dhx_gantt.GanttView', function (require) {
 
         },
         _processFieldsView: function (fieldsView, viewType) {
-            console.log('_processFieldsView');
-            console.log({fieldsView, viewType});
+            // console.log('_processFieldsView');
+            // console.log({fieldsView, viewType});
             var fv = this._super.apply(this, arguments);
-            console.log({fv});
+            // console.log({fv});
             return fv;
         },
     })
 
     viewRegistry.add('dhx_gantt', GanttView);
-    console.log('ADDED DHX_GANTT');
+    // console.log('ADDED DHX_GANTT');
     return GanttView;
 });
