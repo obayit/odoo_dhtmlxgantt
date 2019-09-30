@@ -117,6 +117,7 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
                             serverId: record[self.map_parent][0],
                             text: record[self.map_parent][1],
                             isProject: true,
+                            open: true,
                         }
                         task.parent = project.id;
                         data.push(project);

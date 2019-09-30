@@ -173,15 +173,6 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
             var headerHeight = this.$('.o_dhx_gantt_header').height();
             this.$('.o_dhx_gantt').height(rootHeight - headerHeight);
             gantt.parse(this.state.records);
-            this.openAll();
-        },
-        openAll: function()
-        {
-            gantt.eachTask(function(task){
-                if (task.$level == 0) { //is a project, not a task
-                    gantt.open(task.id);
-                }
-            });
         },
         _onUpdate: function () {
         },
