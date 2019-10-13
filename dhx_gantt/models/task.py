@@ -4,55 +4,8 @@ from odoo import models, fields, api
 from datetime import timedelta
 import datetime
 import json
-
-
-def business_day_correction(target_date):  # , hour=None):
-    target_date += datetime.timedelta(hours=2)
-    weekday = target_date.weekday()
-    if weekday in [4, 5]:
-        target_date += datetime.timedelta(days=6-weekday)
-    # if target_date.hour == 22:
-    #     target_date = target_date.replace(hour=hour, minute=0, second=0, microsecond=0)
-    return target_date
-
-
-def subtract_business_days(from_date, days):
-    business_days_to_sub = days - 1
-    current_date = from_date
-    while business_days_to_sub > 0:
-        current_date -= datetime.timedelta(days=1)
-        weekday = current_date.weekday()
-        if weekday in [4, 5]:  # Monday is 0 and Sunday is 6.
-            continue
-        business_days_to_sub -= 1
-    return current_date
-
-
-def add_business_days(from_date, days):
-    # source: https://stackoverflow.com/a/12691993/3557761
-    # original author: omz --> https://stackoverflow.com/users/573626/omz
-    # print('from_date = ')
-    # print(from_date)
-    business_days_to_add = days - 1
-    # print('business_days_to_add = ')
-    # print(business_days_to_add)
-    current_date = from_date
-    while business_days_to_add > 0:
-        # print('current_date')
-        # print(current_date)
-        current_date += datetime.timedelta(days=1)
-        # print('current_date ++')
-        # print(current_date)
-        weekday = current_date.weekday()
-        if weekday in [4, 5]:  # Monday is 0 and Sunday is 6.
-            # print('{0} is not a business day'.format(current_date))
-            continue
-        business_days_to_add -= 1
-    #     print('business_days_to_add = ')
-    #     print(business_days_to_add)
-    # print('returning ===')
-    # print(current_date)
-    return current_date
+import math
+import pytz
 
 
 class DependingTasks(models.Model):
@@ -210,15 +163,21 @@ class Task(models.Model):
 
     @api.multi
     def schedule(self, visited):
+        self.ensure_one()
+        if not self.dependency_task_ids:
+            # TODO: adjust datetime for server vs local timezone
+            self.date_start = datetime.datetime.combine(self.project_id.date_start, datetime.time.min)
         for parent in self.dependency_task_ids:
             date_start = parent.task_id.date_start
-            date_end = add_business_days(date_start, parent.task_id.planned_duration)
+            if not date_start:
+                continue
+            date_end = self.add_business_days(date_start, parent.task_id.planned_duration)
             # print('schedule task {0} based on parent {1}'.format(self.name, parent.task_id.name))
             # print('parnet starts at {0} and ends at {1}'.format(date_start, date_end))
             if parent.relation_type == "0":  # Finish to Start
                 if date_end:
                     todo_date_start = date_end + datetime.timedelta(days=1 - self.lag_time)
-                    todo_date_start = business_day_correction(todo_date_start)
+                    todo_date_start = self.business_day_correction(todo_date_start)
                     # print('todo_date_start = {0}'.format(todo_date_start))
                     if self.id in visited:
                         self.date_start = max(todo_date_start, self.date_start)
@@ -234,8 +193,8 @@ class Task(models.Model):
                         # print('setting date_start to {0}'.format(self.date_start))
             elif parent.relation_type == "1":  # Start to Start
                 if date_start:
-                    todo_date_start = add_business_days(date_start, self.lag_time)
-                    todo_date_start = business_day_correction(todo_date_start)
+                    todo_date_start = self.add_business_days(date_start, self.lag_time)
+                    todo_date_start = self.business_day_correction(todo_date_start)
                     # print('todo_date_start = {0}'.format(todo_date_start))
                     if self.id in visited:
                         self.date_start = max(todo_date_start, self.date_start)
@@ -251,8 +210,8 @@ class Task(models.Model):
                         # print('setting date_start to {0}'.format(self.date_start))
             elif parent.relation_type == "2":  # Finish to Finish
                 if date_end:
-                    todo_date_start = subtract_business_days(date_end, self.planned_duration - self.lag_time)
-                    todo_date_start = business_day_correction(todo_date_start)
+                    todo_date_start = self.subtract_business_days(date_end, self.planned_duration - self.lag_time)
+                    todo_date_start = self.business_day_correction(todo_date_start)
                     # print('todo_date_start = {0}'.format(todo_date_start))
                     if self.id in visited:
                         self.date_start = max(todo_date_start, self.date_start)
@@ -268,8 +227,8 @@ class Task(models.Model):
                         print('setting date_start to {0}'.format(self.date_start))
             elif parent.relation_type == "3":  # Start to Finish
                 if date_end:
-                    todo_date_start = subtract_business_days(date_start, self.planned_duration - self.lag_time)
-                    todo_date_start = business_day_correction(todo_date_start)
+                    todo_date_start = self.subtract_business_days(date_start, self.planned_duration - self.lag_time)
+                    todo_date_start = self.business_day_correction(todo_date_start)
                     # print('todo_date_start = {0}'.format(todo_date_start))
                     if self.id in visited:
                         self.date_start = max(todo_date_start, self.date_start)
@@ -283,3 +242,121 @@ class Task(models.Model):
                         if callable(set_date_end):
                             self.set_date_end()
                         # print('setting date_start to {0}'.format(self.date_start))
+
+    @api.multi
+    def get_calendar(self):
+        #TODO: get calendar from project_id ((the whole gantt needs to read from only one project))
+        project_id = self and self[0].project_id
+        calendar = project_id.resource_calendar_id
+        res = {
+            0: False,
+            1: False,
+            2: False,
+            3: False,
+            4: False,
+            5: False,
+            6: False,
+        }
+        for work_detail in calendar.attendance_ids:
+            res[int(work_detail.dayofweek)] = True
+            
+        return res
+
+    @api.model
+    def is_business_day(self, target_date):  # , hour=None):
+        weekday = target_date.weekday()
+        if weekday in [4]:
+            return False
+        # if target_date.hour == 22:
+        #     target_date = target_date.replace(hour=hour, minute=0, second=0, microsecond=0)
+        return True
+
+    @api.multi
+    def convert_to_project_tz(self, target_date):
+        if(self.project_id.resource_calendar_id.tz):
+            timezone = pytz.timezone(self.project_id.resource_calendar_id.tz)
+            return target_date.replace(tzinfo=timezone)
+        else:
+            return target_date
+
+    @api.multi
+    def business_day_correction(self, target_date):  # , hour=None):
+        # print('aaah what is lost  ********************************')
+        # print(target_date)
+        # target_date = self.convert_to_project_tz(target_date)
+        # print('mmmmph critz ready  #########################################')
+        # print(target_date)
+        # print('mmmmph critz ready  #########################################')
+        target_date += datetime.timedelta(hours=2)
+        weekday = target_date.weekday()
+        while weekday in [4]:
+            target_date += datetime.timedelta(days=1)
+            weekday = target_date.weekday()
+        # if target_date.hour == 22:
+        #     target_date = target_date.replace(hour=hour, minute=0, second=0, microsecond=0)
+        return target_date
+
+    @api.model
+    def compute_business_days(self, from_date, to_date):
+        # source: https://stackoverflow.com/a/12691993/3557761
+        # original author: omz --> https://stackoverflow.com/users/573626/omz
+        # print('hello')
+        if isinstance(from_date, str):
+            from_date = fields.Datetime.from_string(from_date)
+        if isinstance(to_date, str):
+            to_date = fields.Datetime.from_string(to_date)
+        from_date += datetime.timedelta(hours=2)
+        to_date += datetime.timedelta(hours=2)
+        business_days = 0
+        to_date = to_date.date()
+        current_date = from_date.date()
+        print('{0} > {1}'.format(to_date, current_date))
+        while to_date > current_date:
+            print('{0} business days'.format(business_days))
+            current_date += datetime.timedelta(days=1)
+            weekday = current_date.weekday()
+            if weekday in [4]:  # Monday is 0 and Sunday is 6.
+                print('{0} is not a business day'.format(current_date))
+                continue
+            business_days += 1
+        print('returning {0} + 1'.format(business_days))
+        return business_days + 1
+
+    @api.model
+    def add_business_days(self, from_date, days):
+        # source: https://stackoverflow.com/a/12691993/3557761
+        # original author: omz --> https://stackoverflow.com/users/573626/omz
+        # print('from_date = ')
+        # print(from_date)
+        business_days_to_add = days - 1
+        # print('business_days_to_add = ')
+        # print(business_days_to_add)
+        current_date = from_date
+        while business_days_to_add > 0:
+            # print('current_date')
+            # print(current_date)
+            current_date += datetime.timedelta(days=1)
+            # print('current_date ++')
+            # print(current_date)
+            weekday = current_date.weekday()
+            if weekday in [4]:  # Monday is 0 and Sunday is 6.
+                # print('{0} is not a business day'.format(current_date))
+                continue
+            business_days_to_add -= 1
+        #     print('business_days_to_add = ')
+        #     print(business_days_to_add)
+        # print('returning ===')
+        # print(current_date)
+        return current_date
+
+    @api.model
+    def subtract_business_days(self, from_date, days):
+        business_days_to_sub = days - 1
+        current_date = from_date
+        while business_days_to_sub > 0:
+            current_date -= datetime.timedelta(days=1)
+            weekday = current_date.weekday()
+            if weekday in [4]:  # Monday is 0 and Sunday is 6.
+                continue
+            business_days_to_sub -= 1
+        return current_date

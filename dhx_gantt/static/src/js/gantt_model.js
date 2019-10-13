@@ -89,6 +89,16 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             })
             .then(function (records) {
                 self.convertData(records);
+            })
+            .then(function (records) {
+                return self._rpc({
+                    model: self.modelName,
+                    method: 'get_calendar',
+                    args:[self.res_ids],
+                }).then(function (calendar){
+                    console.log('calendar');
+                    console.log(calendar);
+                })
             });
         },
         convertData: function(records){
@@ -104,7 +114,13 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
                 self.res_ids.push(record[self.map_id]);
                 // value.add(-self.getSession().getTZOffset(value), 'minutes')
                 // data.timezone_offset = (-self.date_object.getTimezoneOffset());
-                var datetime = formatFunc(record[self.map_date_start]);
+                var datetime;
+                if(record[self.map_date_start]){
+                    datetime = formatFunc(record[self.map_date_start]);
+                }else{
+                    datetime = false;
+                }
+
                 var task = {};
                 if(self.map_parent){
                     var projectFound = data.find(function(element) {

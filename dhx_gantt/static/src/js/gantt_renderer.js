@@ -2,9 +2,22 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
     "use strict";
 
     var AbstractRenderer = require('web.AbstractRenderer');
+    var FormRenderer = require('web.FormRenderer');
     // var BasicRenderer = require('web.BasicRenderer');
     // var dialogs = require('web.view_dialogs');
-    // var core = require('web.core');
+
+    // FormRenderer.include({
+    //     events: _.extend({}, FormRenderer.prototype.events, {
+    //         'click button.o_dhx_gantt': '_onClickShowGantt',
+    //     }),
+    //     _onClickShowGantt: function(){
+    //         console.log('well hello');
+    //     },
+    //     init: function () {
+    //         this._super.apply(this, arguments);
+    //         console.log('init() GanttFormRenderer');
+    //     },
+    // });
 
     var GanttRenderer = AbstractRenderer.extend({
         template: "dhx_gantt.gantt_view",
@@ -56,6 +69,7 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
             }
 
             gantt.setWorkTime({day:5, hours: false });
+            gantt.setWorkTime({day:6, hours: true });
             gantt.setWorkTime({day:0, hours: true });
             gantt.setWorkTime({hours: [0,23]});
             gantt.templates.timeline_cell_class = function(task, date){

@@ -2,7 +2,8 @@
     <template id="assets_backend" name="tab assets" inherit_id="web.assets_backend">
         <xpath expr="//script[last()]" position="after">
             <!-- <script type="text/javascript" src="/dhx_gantt/static/src/js/tab_default.js"></script> -->
-            <script type="text/javascript" src="/dhx_gantt/static/lib/dhtmlxgantt/js/dhtmlxgantt.min.js"></script>
+            <!-- <script type="text/javascript" src="/dhx_gantt/static/lib/dhtmlxgantt/js/dhtmlxgantt.min.js"></script> -->
+            <script type="text/javascript" src="/dhx_gantt/static/lib/dhtmlxgantt/js/dhtmlxgantt.js"></script>
             <script type="text/javascript" src="/dhx_gantt/static/lib/dhtmlxgantt/js/dhtmlxgantt_marker.js"></script>
             <!-- <link rel="stylesheet" type="text/css" href="/dhx_gantt/static/lib/dhtmlxgantt/css/dhtmlxgantt.css"/> -->
             <link rel="stylesheet" type="text/css" href="/dhx_gantt/static/lib/dhtmlxgantt/skins/dhtmlxgantt_material.css"/>
@@ -11,6 +12,7 @@
             <script type="text/javascript" src="/dhx_gantt/static/src/js/gantt_renderer.js"></script>
             <script type="text/javascript" src="/dhx_gantt/static/src/js/gantt_controller.js"></script>
             <script type="text/javascript" src="/dhx_gantt/static/src/js/gantt_view.js"></script>
+            <script type="text/javascript" src="/dhx_gantt/static/src/js/gantt_action.js"></script>
             <link rel="stylesheet" type="text/css" href="/dhx_gantt/static/src/css/gantt.css"/>
         </xpath>
     </template>

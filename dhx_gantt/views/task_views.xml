@@ -24,8 +24,8 @@
             <field name="inherit_id" ref="project.view_task_form2"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='user_id']" position="after">
-                    <field name="planned_duration"/>
-                    <field name="lag_time"/>
+                    <!-- <field name="planned_duration"/> -->
+                    <!-- <field name="lag_time"/> -->
                 </xpath>
                 <xpath expr="//page[@name='description_page']" position="after">
                     <page string="Dependencies">
