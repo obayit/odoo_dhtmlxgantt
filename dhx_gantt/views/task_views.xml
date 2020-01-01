@@ -29,6 +29,11 @@
                 </xpath>
                 <xpath expr="//page[@name='description_page']" position="after">
                     <page string="Dependencies">
+                        <group string="Gantt Info">
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="planned_duration"/>
+                        </group>
                         <separator string="Predecessors"/>
                         <field name="dependency_task_ids">
                             <tree editable="buttom">
