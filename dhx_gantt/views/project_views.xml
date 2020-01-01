@@ -1,6 +1,11 @@
 <!-- todo: remove the date_start and date_end from the Extra Info Tab -->
 <odoo>
     <data>
+        <record id="action_project_show_gantt" model="ir.actions.client">
+            <field name="tag">project_show_gantt</field>
+            <field name="name">Project Gantt</field>
+        </record>
+        
         <record id="view_project_form_gantt" model="ir.ui.view">
             <field name="name">project.project.gantt.form</field>
             <field name="model">project.project</field>
@@ -13,9 +18,5 @@
             </field>
         </record>
 
-        <record id="action_project_show_gantt" model="ir.actions.client">
-            <field name="tag">project_show_gantt</field>
-            <field name="name">Project Gantt</field>
-        </record>
     </data>
 </odoo>
