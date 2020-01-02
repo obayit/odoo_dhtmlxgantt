@@ -47,11 +47,12 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
             // console.log(params);
 
             var self = this;
-            gantt.templates.scale_cell_class = function(date){
-                if(date.getDay()==5||date.getDay()==6){
-                    return "o_dhx_gantt_weekend";
-                }
-            };
+            // todo: make this read from some database variable
+            // gantt.templates.scale_cell_class = function(date){
+            //     if(date.getDay()==5||date.getDay()==6){
+            //         return "o_dhx_gantt_weekend";
+            //     }
+            // };
 
             gantt.config.work_time = true;
             gantt.config.skip_off_time = true;
@@ -72,12 +73,13 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
             gantt.setWorkTime({day:6, hours: true });
             gantt.setWorkTime({day:0, hours: true });
             gantt.setWorkTime({hours: [0,23]});
-            gantt.templates.timeline_cell_class = function(task, date){
-                // if(date.getDay()==5||date.getDay()==6){ 
-                if(!gantt.isWorkTime({task:task, date: date})){
-                    return "o_dhx_gantt_weekend";
-                }
-            };
+            // (duplicate)todo: make this read from some database variable
+            // gantt.templates.timeline_cell_class = function(task, date){
+            //     // if(date.getDay()==5||date.getDay()==6){ 
+            //     if(!gantt.isWorkTime({task:task, date: date})){
+            //         return "o_dhx_gantt_weekend";
+            //     }
+            // };
             var zoomConfig = {
                 levels: [
                     {
