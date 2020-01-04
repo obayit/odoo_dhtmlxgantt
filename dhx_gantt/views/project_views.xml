@@ -11,10 +11,15 @@
             <field name="model">project.project</field>
             <field name="inherit_id" ref="project.edit_project"/>
             <field name="arch" type="xml">
-
+<!-- 
                 <xpath expr="//button" position="after">
                     <button name="%(action_project_show_gantt)d" type="action" class="o_dhx_show_gantt" string="Show Gantt"/>
+                </xpath> -->
+
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="date_start"/>
                 </xpath>
+
             </field>
         </record>
 

@@ -10,5 +10,5 @@ odoo.define('dhx_gantt.GanttAction', function (require) {
         },
     });
     core.action_registry.add("project_show_gantt", GanttAction);
-    console.log('gantt action loaded');
+    // console.log('gantt action loaded');
 });

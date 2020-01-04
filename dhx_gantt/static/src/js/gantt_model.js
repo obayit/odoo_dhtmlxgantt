@@ -89,16 +89,6 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             })
             .then(function (records) {
                 self.convertData(records);
-            })
-            .then(function (records) {
-                return self._rpc({
-                    model: self.modelName,
-                    method: 'get_calendar',
-                    args:[self.res_ids],
-                }).then(function (calendar){
-                    console.log('calendar');
-                    console.log(calendar);
-                })
             });
         },
         convertData: function(records){

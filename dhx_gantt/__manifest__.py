@@ -34,10 +34,6 @@
         'views/task_views.xml',
         'views/project_views.xml',
     ],
-    # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
-    ],
     'qweb': [
         "static/src/xml/gantt.xml",
     ],
