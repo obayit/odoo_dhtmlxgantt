@@ -27,26 +27,26 @@ odoo.define('dhx_gantt.GanttView', function (require) {
             // console.log(this.loadParams);
             this.loadParams.type = 'list';
 
-            this.loadParams.id_field = this.arch.attrs.id_field;
-            this.loadParams.date_start = this.arch.attrs.date_start;
-            this.loadParams.duration = this.arch.attrs.duration;
-            this.loadParams.open = this.arch.attrs.open;
-            this.loadParams.progress = this.arch.attrs.progress;
-            this.loadParams.text = this.arch.attrs.text;
-            this.loadParams.links_serialized_json = this.arch.attrs.links_serialized_json;
-            this.loadParams.total_float = this.arch.attrs.total_float;
+            this.loadParams.id_field = viewInfo.arch.attrs.id_field;
+            this.loadParams.date_start = viewInfo.arch.attrs.date_start;
+            this.loadParams.duration = viewInfo.arch.attrs.duration;
+            this.loadParams.open = viewInfo.arch.attrs.open;
+            this.loadParams.progress = viewInfo.arch.attrs.progress;
+            this.loadParams.text = viewInfo.arch.attrs.text;
+            this.loadParams.links_serialized_json = viewInfo.arch.attrs.links_serialized_json;
+            this.loadParams.total_float = viewInfo.arch.attrs.total_float;
             this.loadParams.modelName = params.modelName;
-            this.loadParams.linkModel = this.arch.attrs.link_model;
+            this.loadParams.linkModel = viewInfo.arch.attrs.link_model;
 
             // this.loadParams.fields = 
             this.loadParams.fieldNames = [
-                this.arch.attrs.id_field,
-                this.arch.attrs.date_start,
-                this.arch.attrs.duration,
-                this.arch.attrs.open,
-                this.arch.attrs.progress,
-                this.arch.attrs.text,
-                this.arch.attrs.links_serialized_json,
+                viewInfo.arch.attrs.id_field,
+                viewInfo.arch.attrs.date_start,
+                viewInfo.arch.attrs.duration,
+                viewInfo.arch.attrs.open,
+                viewInfo.arch.attrs.progress,
+                viewInfo.arch.attrs.text,
+                viewInfo.arch.attrs.links_serialized_json,
             ];
             // console.log('infamous');
             // console.log(this.loadParams.fields);
@@ -54,16 +54,16 @@ odoo.define('dhx_gantt.GanttView', function (require) {
 
             this.rendererParams.initDomain = params.domain;
             this.rendererParams.modelName = params.modelName;
-            this.rendererParams.map_id_field = this.arch.attrs.id_field;
-            this.rendererParams.map_date_start = this.arch.attrs.date_start;
-            this.rendererParams.map_duration = this.arch.attrs.duration;
-            this.rendererParams.map_open = this.arch.attrs.open;
-            this.rendererParams.map_progress = this.arch.attrs.progress;
-            this.rendererParams.map_text = this.arch.attrs.text;
-            this.rendererParams.map_links_serialized_json = this.arch.attrs.links_serialized_json;
-            this.rendererParams.link_model = this.arch.attrs.link_model;
-            this.rendererParams.link_model = this.arch.attrs.link_model;
-            this.rendererParams.is_total_float = this.arch.attrs.total_float;
+            this.rendererParams.map_id_field = viewInfo.arch.attrs.id_field;
+            this.rendererParams.map_date_start = viewInfo.arch.attrs.date_start;
+            this.rendererParams.map_duration = viewInfo.arch.attrs.duration;
+            this.rendererParams.map_open = viewInfo.arch.attrs.open;
+            this.rendererParams.map_progress = viewInfo.arch.attrs.progress;
+            this.rendererParams.map_text = viewInfo.arch.attrs.text;
+            this.rendererParams.map_links_serialized_json = viewInfo.arch.attrs.links_serialized_json;
+            this.rendererParams.link_model = viewInfo.arch.attrs.link_model;
+            this.rendererParams.link_model = viewInfo.arch.attrs.link_model;
+            this.rendererParams.is_total_float = viewInfo.arch.attrs.total_float;
 
         },
         _processFieldsView: function (fieldsView, viewType) {

@@ -191,7 +191,7 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             return this._rpc({
                 model: this.linkModel,
                 method: 'create',
-                args: args,
+                args: args[0],
             });
         },
         deleteLink: function(data){

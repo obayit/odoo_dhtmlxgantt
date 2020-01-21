@@ -1,9 +1,9 @@
 odoo.define('dhx_gantt.GanttAction', function (require) {
     "use strict";
     var core = require('web.core');
-    var AbstractAction = require('web.AbstractAction');
+    var Widget = require('web.Widget');
 
-    var GanttAction = AbstractAction.extend({
+    var GanttAction = Widget.extend({
         init: function (parent) {
             this._super.apply(this, arguments);
             console.log('meh tuf prep');
