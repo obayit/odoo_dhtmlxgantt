@@ -3,6 +3,7 @@
 from odoo import models, fields, api, _
 from datetime import timedelta
 from odoo.exceptions import Warning, UserError
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 import datetime
 import json
 import math
@@ -139,6 +140,9 @@ class Task(models.Model):
         tasks = self.env['project.task'].search([('project_id', '=', projects.id)])
         leading_tasks = tasks.filtered(lambda t: not t.dependency_task_ids)
 
+        if not leading_tasks:
+            raise UserError("Can't auto schedule when there is not any independent link available.")
+
         # Mark all the vertices as not visited
         visited = []
 
@@ -170,7 +174,7 @@ class Task(models.Model):
 
     @api.multi
     def set_date_end(self):
-        self.date_end = self.date_start + datetime.timedelta(days=self.planned_duration)
+        self.date_end = datetime.datetime.strptime(self.date_start, DEFAULT_SERVER_DATETIME_FORMAT) + datetime.timedelta(days=self.planned_duration)
 
     @api.multi
     def schedule(self, visited):
@@ -181,7 +185,7 @@ class Task(models.Model):
                 self.date_start = datetime.datetime.combine(self.project_id.date_start, datetime.time.min)
                 self.set_date_end()
         for parent in self.dependency_task_ids:
-            date_start = parent.task_id.date_start
+            date_start = datetime.datetime.strptime(parent.task_id.date_start, DEFAULT_SERVER_DATETIME_FORMAT)
             if not date_start:
                 continue
             date_end = date_start + datetime.timedelta(days=parent.task_id.planned_duration)
@@ -189,7 +193,7 @@ class Task(models.Model):
                 if date_end:
                     todo_date_start = date_end + datetime.timedelta(days=1 - self.lag_time)
                     if self.id in visited:
-                        self.date_start = max(todo_date_start, self.date_start)
+                        self.date_start = max(todo_date_start, datetime.datetime.strptime(self.date_start, DEFAULT_SERVER_DATETIME_FORMAT))
                         set_date_end = getattr(self, "set_date_end", None)
                         if callable(set_date_end):
                             self.set_date_end()
@@ -202,7 +206,7 @@ class Task(models.Model):
                 if date_start:
                     todo_date_start = date_start + datetime.timedelta(self.lag_time)
                     if self.id in visited:
-                        self.date_start = max(todo_date_start, self.date_start)
+                        self.date_start = max(todo_date_start, datetime.datetime.strptime(self.date_start, DEFAULT_SERVER_DATETIME_FORMAT))
                         set_date_end = getattr(self, "set_date_end", None)
                         if callable(set_date_end):
                             self.set_date_end()
@@ -215,7 +219,7 @@ class Task(models.Model):
                 if date_end:
                     todo_date_start = date_end - datetime.timedelta(self.planned_duration - self.lag_time)
                     if self.id in visited:
-                        self.date_start = max(todo_date_start, self.date_start)
+                        self.date_start = max(todo_date_start, datetime.datetime.strptime(self.date_start, DEFAULT_SERVER_DATETIME_FORMAT))
                         set_date_end = getattr(self, "set_date_end", None)
                         if callable(set_date_end):
                             self.set_date_end()
@@ -228,7 +232,7 @@ class Task(models.Model):
                 if date_end:
                     todo_date_start = date_start - datetime.timedelta(self.planned_duration - self.lag_time)
                     if self.id in visited:
-                        self.date_start = max(todo_date_start, self.date_start)
+                        self.date_start = max(todo_date_start, datetime.datetime.strptime(self.date_start, DEFAULT_SERVER_DATETIME_FORMAT))
                         set_date_end = getattr(self, "set_date_end", None)
                         if callable(set_date_end):
                             self.set_date_end()
