@@ -56,7 +56,7 @@
         </record>
 
         <record id="project.act_project_project_2_project_task_all" model="ir.actions.act_window">
-            <field name="view_mode">kanban,tree,form,calendar,pivot,graph,dhx_gantt</field>
+            <field name="view_mode">kanban,tree,form,calendar,pivot,graph,activity,dhx_gantt</field>
         </record>
         
 

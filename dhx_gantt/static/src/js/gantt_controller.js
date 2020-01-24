@@ -61,7 +61,7 @@ var GanttController = AbstractController.extend({
                             var res_deferred = $.Deferred();
                             self.model.createLink(data).then(function(res) {
                                 // set res.id as the id returned from the server to update client id :)
-                                // res.id = res;
+                                res.id = res[0];
                                 res_deferred.resolve(res);
                             }, function(res){
                                 // console.log('create link failed');

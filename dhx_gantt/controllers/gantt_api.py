@@ -15,7 +15,13 @@ class GanttController(http.Controller):
     def gantt_api(self, model_name, timezone_offset, domain=None, **kw):
         # main GET method
         timezone_offset = int(timezone_offset)
+        print('DOMAIN')
+        print(type(domain))
+        print(domain)
         domain = json.loads(domain)
+        print('deserialized DOMAIN')
+        print(type(domain))
+        print(domain)
         tasks = request.env[model_name].search(domain).sorted('date_start')
 
         # current_user = request.env.user
@@ -24,11 +30,18 @@ class GanttController(http.Controller):
 
         res_tasks = []
         res_links = []
+        print(tasks)
         for task in tasks:
             # {"id":22, "text":"Task #4.2", "start_date":"03-04-2018", "duration":"4", "parent":"15", "progress": 0.1, "open": true},
             # {"id":"1","source":"1","target":"2","type":"1"},
+            print('timezone_offset')
+            print(timezone_offset)
+            print('converting')
+            print(task.date_start)
             # date_start = pytz.utc.localize(task.date_start).astimezone(tz)
             date_start = task.date_start + timedelta(minutes=timezone_offset)
+            print('to')
+            print(date_start)
             res_tasks.append({
                 'id': task.id,
                 'text': task.name,
@@ -60,10 +73,25 @@ class GanttController(http.Controller):
         # start_date: 31-08-2019 00:00
         # end_date: 02-09-2019 00:00
         # parent: 0
+        print('potis')
+        print('model is')
+        print(model_name)
+        print('start_date')
+        print(start_date)
         timezone_offset = int(timezone_offset)
+        print('timezone_offset')
+        print(timezone_offset)
         start_date = datetime.strptime(start_date, '%d-%m-%Y %H:%M');
         start_date = start_date + timedelta(minutes=-timezone_offset);
+        print('writing to ')
+        print(request.env[model_name].browse([task_id]))
+        print('values')
+        print({
+            'date_start': start_date,
+            'duration': duration,
+        })
         values = dict()
+        print(request.params)
         values[request.params['map_date_start']] = start_date
         values[request.params['map_duration']] = duration
         request.env[model_name].browse([task_id]).write(values)

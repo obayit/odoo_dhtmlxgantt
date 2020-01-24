@@ -11,7 +11,7 @@
     """,
     "category": "Project Management",
 
-    'author': "Ubay Abdelgadir, Heliconia.io",
+    'author': "Ubay Abdelgadir",
     'website': "https://github.com/obayit/odoo_dhtmlxgantt",
     'license': "GPL-3",
 
