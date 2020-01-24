@@ -1,58 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from datetime import timedelta
+from odoo.exceptions import Warning, UserError
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 import datetime
 import json
-
-
-def business_day_correction(target_date):  # , hour=None):
-    target_date += datetime.timedelta(hours=2)
-    weekday = target_date.weekday()
-    if weekday in [4, 5]:
-        target_date += datetime.timedelta(days=6-weekday)
-    # if target_date.hour == 22:
-    #     target_date = target_date.replace(hour=hour, minute=0, second=0, microsecond=0)
-    return target_date
-
-
-def subtract_business_days(from_date, days):
-    business_days_to_sub = days - 1
-    current_date = from_date
-    while business_days_to_sub > 0:
-        current_date -= datetime.timedelta(days=1)
-        weekday = current_date.weekday()
-        if weekday in [4, 5]:  # Monday is 0 and Sunday is 6.
-            continue
-        business_days_to_sub -= 1
-    return current_date
-
-
-def add_business_days(from_date, days):
-    # source: https://stackoverflow.com/a/12691993/3557761
-    # original author: omz --> https://stackoverflow.com/users/573626/omz
-    # print('from_date = ')
-    # print(from_date)
-    business_days_to_add = days - 1
-    # print('business_days_to_add = ')
-    # print(business_days_to_add)
-    current_date = from_date
-    while business_days_to_add > 0:
-        # print('current_date')
-        # print(current_date)
-        current_date += datetime.timedelta(days=1)
-        # print('current_date ++')
-        # print(current_date)
-        weekday = current_date.weekday()
-        if weekday in [4, 5]:  # Monday is 0 and Sunday is 6.
-            # print('{0} is not a business day'.format(current_date))
-            continue
-        business_days_to_add -= 1
-    #     print('business_days_to_add = ')
-    #     print(business_days_to_add)
-    # print('returning ===')
-    # print(current_date)
-    return current_date
+import math
+import pytz
 
 
 class DependingTasks(models.Model):
@@ -74,9 +29,21 @@ class DependingTasks(models.Model):
         ('task_relation_unique', 'unique(task_id, depending_task_id)', 'Two tasks can have only one relation!'),
     ]
 
+    @api.model
+    def create(self, vals_list):
+        if vals_list.get('task_id'):
+            task_id = vals_list.get('task_id')
+            if 'project' in task_id:
+                raise Warning(_('You can not create relatioin between Project and task!'))
+        res = super(DependingTasks, self).create(vals_list)
+        return res
+
+
 
 class Task(models.Model):
     _inherit = "project.task"
+
+    date_start = fields.Datetime()
 
     planned_duration = fields.Integer('Duration', default=7)
     lag_time = fields.Integer('Lag Time')
@@ -145,21 +112,19 @@ class Task(models.Model):
         while current_task:
             critical_path.append(current_task)
             critical_tasks.append(current_task.id)
-            # print(current_task.depending_task_ids)
             # depending_tasks = current_task.depending_task_ids.mapped('depending_task_id')
             # sorted_by_duration = depending_tasks.sorted('planned_duration', True)
-            sorted_by_duration = current_task.depending_task_ids.sorted(lambda dep: dep.depending_task_id.planned_duration, reverse=True)
+            sorted_by_duration = current_task.depending_task_ids.sorted(
+                lambda dep: dep.depending_task_id.planned_duration, reverse=True)
             if sorted_by_duration:
                 current_task = sorted_by_duration[0].depending_task_id
                 critical_links.append(sorted_by_duration[0].id)
             else:
                 current_task = False
 
-        # print('critical_path')
         txt = ''
         for path in critical_path:
             txt += str(path.date_start) + ' >> '
-        # print(txt)
         return {
             'tasks': critical_tasks,
             'links': critical_links
@@ -171,14 +136,16 @@ class Task(models.Model):
         if len(projects) > 1:
             raise UserError("Can't auto schedule more than one project in the same time.")
 
-        tasks = projects and projects.task_ids.sorted()
+        # not using project.task_ids because it has a default domain
+        tasks = self.env['project.task'].search([('project_id', '=', projects.id)])
         leading_tasks = tasks.filtered(lambda t: not t.dependency_task_ids)
+
+        if not leading_tasks:
+            raise UserError("Can't auto schedule when there is not any independent link available.")
 
         # Mark all the vertices as not visited
         visited = []
 
-        # print('LEADING TASKS')
-        # print(leading_tasks.mapped('name'))
         # Breadth First Traversal for every task that have no dependency
         for task in leading_tasks:
             # Create a queue for BFS
@@ -190,13 +157,10 @@ class Task(models.Model):
                 traversal_counter += 1
                 if traversal_counter > 4069:
                     # break out of a possibly infinite loop
-                    # print('# break out of a possibly infinite loop')
                     break
                 # Dequeue a vertex from
                 # queue and print it
                 s = queue.pop(0)
-                # print('JUST POPPED')
-                # print(s.name)
                 s.schedule(visited)
                 visited.append(s.id)
                 # Get all adjacent vertices of the
@@ -209,77 +173,71 @@ class Task(models.Model):
                         # visited.append(child.depending_task_id.id)
 
     @api.multi
+    def set_date_end(self):
+        self.date_end = datetime.datetime.strptime(self.date_start, DEFAULT_SERVER_DATETIME_FORMAT) + datetime.timedelta(days=self.planned_duration)
+
+    @api.multi
     def schedule(self, visited):
+        self.ensure_one()
+        if not self.dependency_task_ids:
+            # TODO: adjust datetime for server vs local timezone
+            if self.project_id and self.project_id.date_start:
+                self.date_start = datetime.datetime.combine(self.project_id.date_start, datetime.time.min)
+                self.set_date_end()
         for parent in self.dependency_task_ids:
-            date_start = parent.task_id.date_start
-            date_end = add_business_days(date_start, parent.task_id.planned_duration)
-            # print('schedule task {0} based on parent {1}'.format(self.name, parent.task_id.name))
-            # print('parnet starts at {0} and ends at {1}'.format(date_start, date_end))
+            date_start = datetime.datetime.strptime(parent.task_id.date_start, DEFAULT_SERVER_DATETIME_FORMAT)
+            if not date_start:
+                continue
+            date_end = date_start + datetime.timedelta(days=parent.task_id.planned_duration)
             if parent.relation_type == "0":  # Finish to Start
                 if date_end:
                     todo_date_start = date_end + datetime.timedelta(days=1 - self.lag_time)
-                    todo_date_start = business_day_correction(todo_date_start)
-                    # print('todo_date_start = {0}'.format(todo_date_start))
                     if self.id in visited:
-                        self.date_start = max(todo_date_start, self.date_start)
+                        self.date_start = max(todo_date_start, datetime.datetime.strptime(self.date_start, DEFAULT_SERVER_DATETIME_FORMAT))
                         set_date_end = getattr(self, "set_date_end", None)
                         if callable(set_date_end):
                             self.set_date_end()
-                        # print('setting date_start to {0}'.format(self.date_start))
                     else:
                         self.date_start = todo_date_start
                         set_date_end = getattr(self, "set_date_end", None)
                         if callable(set_date_end):
                             self.set_date_end()
-                        # print('setting date_start to {0}'.format(self.date_start))
             elif parent.relation_type == "1":  # Start to Start
                 if date_start:
-                    todo_date_start = add_business_days(date_start, self.lag_time)
-                    todo_date_start = business_day_correction(todo_date_start)
-                    # print('todo_date_start = {0}'.format(todo_date_start))
+                    todo_date_start = date_start + datetime.timedelta(self.lag_time)
                     if self.id in visited:
-                        self.date_start = max(todo_date_start, self.date_start)
+                        self.date_start = max(todo_date_start, datetime.datetime.strptime(self.date_start, DEFAULT_SERVER_DATETIME_FORMAT))
                         set_date_end = getattr(self, "set_date_end", None)
                         if callable(set_date_end):
                             self.set_date_end()
-                        # print('setting date_start to {0}'.format(self.date_start))
                     else:
                         self.date_start = todo_date_start
                         set_date_end = getattr(self, "set_date_end", None)
                         if callable(set_date_end):
                             self.set_date_end()
-                        # print('setting date_start to {0}'.format(self.date_start))
             elif parent.relation_type == "2":  # Finish to Finish
                 if date_end:
-                    todo_date_start = subtract_business_days(date_end, self.planned_duration - self.lag_time)
-                    todo_date_start = business_day_correction(todo_date_start)
-                    # print('todo_date_start = {0}'.format(todo_date_start))
+                    todo_date_start = date_end - datetime.timedelta(self.planned_duration - self.lag_time)
                     if self.id in visited:
-                        self.date_start = max(todo_date_start, self.date_start)
+                        self.date_start = max(todo_date_start, datetime.datetime.strptime(self.date_start, DEFAULT_SERVER_DATETIME_FORMAT))
                         set_date_end = getattr(self, "set_date_end", None)
                         if callable(set_date_end):
                             self.set_date_end()
-                        # print('setting date_start to {0}'.format(self.date_start))
                     else:
                         self.date_start = todo_date_start
                         set_date_end = getattr(self, "set_date_end", None)
                         if callable(set_date_end):
                             self.set_date_end()
-                        # print('setting date_start to {0}'.format(self.date_start))
             elif parent.relation_type == "3":  # Start to Finish
                 if date_end:
-                    todo_date_start = subtract_business_days(date_start, self.planned_duration - self.lag_time)
-                    todo_date_start = business_day_correction(todo_date_start)
-                    # print('todo_date_start = {0}'.format(todo_date_start))
+                    todo_date_start = date_start - datetime.timedelta(self.planned_duration - self.lag_time)
                     if self.id in visited:
-                        self.date_start = max(todo_date_start, self.date_start)
+                        self.date_start = max(todo_date_start, datetime.datetime.strptime(self.date_start, DEFAULT_SERVER_DATETIME_FORMAT))
                         set_date_end = getattr(self, "set_date_end", None)
                         if callable(set_date_end):
                             self.set_date_end()
-                        # print('setting date_start to {0}'.format(self.date_start))
                     else:
                         self.date_start = todo_date_start
                         set_date_end = getattr(self, "set_date_end", None)
                         if callable(set_date_end):
                             self.set_date_end()
-                        # print('setting date_start to {0}'.format(self.date_start))

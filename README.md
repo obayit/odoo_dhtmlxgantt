@@ -12,5 +12,5 @@ This module is not perfect, please test it first before using it for production 
 # Know Issues
 Sometimes changing the datetime fields do not consider the timezone :(
 
-Weekend is hard coded to be Friday and Saturday.
+Todo: make calculations for weekend.
 
