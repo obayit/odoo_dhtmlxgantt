@@ -36,12 +36,18 @@ class Task(models.Model):
     depending_task_ids = fields.One2many('project.depending.tasks', 'task_id')
     dependency_task_ids = fields.One2many('project.depending.tasks', 'depending_task_id')
     links_serialized_json = fields.Char('Serialized Links JSON', compute="compute_links_json")
+    date_start = fields.Datetime('Start Date')
 
     recursive_dependency_task_ids = fields.Many2many(
         string='Recursive Dependencies',
         comodel_name='project.task',
         compute='_compute_recursive_dependency_task_ids'
     )
+
+    @api.onchange()
+    def onchange_planned_duration(self):
+        #TODO: write this, maybe with inverse_field
+        pass
 
     @api.depends('dependency_task_ids')
     def _compute_recursive_dependency_task_ids(self):
@@ -60,7 +66,6 @@ class Task(models.Model):
                 dependency_tasks |= self.get_dependency_tasks(t, recursive)
         return dependency_tasks
 
-    @api.multi
     def compute_links_json(self):
         for r in self:
             links = []
@@ -81,7 +86,6 @@ class Task(models.Model):
     def add_days(self, target_date, days):
         return target_date + timedelta(days=days)
 
-    @api.multi
     def compute_critical_path(self):
         # evidently the critical path is the longest path on the network graph
         # evidently this algorithm does not work
@@ -118,7 +122,6 @@ class Task(models.Model):
             'links': critical_links
         }
 
-    @api.multi
     def bf_traversal_schedule(self):
         projects = self.mapped('project_id')
         if len(projects) > 1:
@@ -162,11 +165,9 @@ class Task(models.Model):
                         queue.append(child.depending_task_id)
                         # visited.append(child.depending_task_id.id)
 
-    @api.multi
     def set_date_end(self):
         self.date_end = self.date_start + datetime.timedelta(days=self.planned_duration)
 
-    @api.multi
     def schedule(self, visited):
         # print('Rescheduling task ', self and self.name or 'NONE')
         self.ensure_one()
