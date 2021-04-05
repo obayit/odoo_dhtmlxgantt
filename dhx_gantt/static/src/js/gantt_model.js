@@ -151,7 +151,7 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
                 return $.when();
             }
             // console.log('updateTask');
-            // console.log({data});
+            // console.log(data);
             var args = [];
             var values = {};
 
