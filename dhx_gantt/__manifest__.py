@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 {
     'name': "Mediocre DHX Gantt",
 
@@ -39,5 +38,7 @@
     ],
     'images': [
         'images/screenshot_1.png'
-    ]
+    ],
+    'uninstall_hook': 'dhx_uninstall_hook'
+
 }
