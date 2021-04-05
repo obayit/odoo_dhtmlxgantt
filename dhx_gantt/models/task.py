@@ -1,12 +1,12 @@
-# -*- coding: utf-8 -*-
-
-from odoo import models, fields, api
-from datetime import timedelta
+from pprint import pprint
 import datetime
 import json
 import math
 import pytz
 
+from odoo import models, fields, api
+from odoo.exceptions import UserError
+from datetime import timedelta
 
 class DependingTasks(models.Model):
     _name = "project.depending.tasks"
@@ -31,7 +31,8 @@ class DependingTasks(models.Model):
 class Task(models.Model):
     _inherit = "project.task"
 
-    planned_duration = fields.Integer('Duration', default=7)
+    planned_duration = fields.Float('Duration', default=7, compute='_compute_planned_duration',
+    inverse='_inverse_planned_duration', store=True)
     lag_time = fields.Integer('Lag Time')
     depending_task_ids = fields.One2many('project.depending.tasks', 'task_id')
     dependency_task_ids = fields.One2many('project.depending.tasks', 'depending_task_id')
@@ -44,10 +45,25 @@ class Task(models.Model):
         compute='_compute_recursive_dependency_task_ids'
     )
 
-    @api.onchange()
-    def onchange_planned_duration(self):
-        #TODO: write this, maybe with inverse_field
-        pass
+    @api.depends('date_start', 'date_end')
+    def _compute_planned_duration(self):
+        print('### Called _compute_planned_duration')
+        for r in self:
+            if r.date_start and r.date_end:
+                elapsed_seconds = (r.date_end - r.date_start).total_seconds()
+                seconds_in_day = 24 * 60 * 60
+                r.planned_duration = elapsed_seconds / seconds_in_day
+                r = r.with_context(ignore_onchange_planned_duration=True)
+                print('first context is')
+                pprint(r.env.context)
+
+    @api.onchange('planned_duration', 'date_start')
+    def _inverse_planned_duration(self):
+        print('@@@ Called _inverse_planned_duration, {}'.format(self.env.context.get('ignore_onchange_planned_duration', False)))
+        pprint(self.env.context)
+        for r in self:
+            if r.date_start and r.planned_duration and not r.env.context.get('ignore_onchange_planned_duration', False):
+                r.date_end = r.date_start + timedelta(days=r.planned_duration)
 
     @api.depends('dependency_task_ids')
     def _compute_recursive_dependency_task_ids(self):
