@@ -6,7 +6,6 @@ odoo.define('dhx_gantt.GanttAction', function (require) {
     var GanttAction = AbstractAction.extend({
         init: function (parent) {
             this._super.apply(this, arguments);
-            console.log('meh tuf prep');
         },
     });
     core.action_registry.add("project_show_gantt", GanttAction);

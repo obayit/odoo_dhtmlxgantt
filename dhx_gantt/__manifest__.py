@@ -1,14 +1,10 @@
-# -*- coding: utf-8 -*-
 {
     'name': "Mediocre DHX Gantt",
 
     'summary': """
-        This module integrates project tasks with the interactive HTML5 Gantt chart 
+        This module integrates project tasks with the interactive HTML5 Gantt chart
         from DHX. Their website is https://dhtmlx.com""",
 
-    'description': """
-        
-    """,
     "category": "Project Management",
 
     'author': "Ubay Abdelgadir",
