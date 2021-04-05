@@ -35,5 +35,7 @@
     ],
     'images': [
         'images/screenshot_1.png'
-    ]
+    ],
+    'uninstall_hook': 'dhx_uninstall_hook'
+
 }
