@@ -69,7 +69,8 @@ odoo.define('dhx_gantt.GanttRenderer', function (require) {
                 gantt.config.columns.push({name: "total_float", label: "Total Float", align: "center"})
             }
 
-            gantt.setWorkTime({day:5, hours: false });
+            //TODO: setup configurable weekend days.
+            gantt.setWorkTime({day:5, hours: true });
             gantt.setWorkTime({day:6, hours: true });
             gantt.setWorkTime({day:0, hours: true });
             gantt.setWorkTime({hours: [0,23]});
