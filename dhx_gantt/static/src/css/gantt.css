@@ -13,6 +13,7 @@
 
 .o_dhx_gantt_header{
     background-color: white;
+    min-height: 40px;
    /* position: relative;
     display: -webkit-box;
     display: -webkit-flex;
