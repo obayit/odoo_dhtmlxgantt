@@ -158,8 +158,12 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
             var id = data.id;
             values[this.map_text] = data.text;
             values[this.map_duration] = data.duration;
-            values[this.map_open] = data.open;
-            values[this.map_progress] = data.progress;
+            if (this.map_open){
+                values[this.map_open] = data.open;
+            }
+            if (this.map_progress){
+                values[this.map_progress] = data.progress;
+            }
 
             var formatFunc = gantt.date.str_to_date("%d-%m-%Y %h:%i");
             var date_start = formatFunc(data.start_date);
