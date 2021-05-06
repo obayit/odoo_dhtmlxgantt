@@ -165,11 +165,11 @@ odoo.define('dhx_gantt.GanttModel', function (require) {
                 values[this.map_progress] = data.progress;
             }
 
+            // convert time from dhx's string, to a javascript datetime, then to odoo's sting format :D
             var formatFunc = gantt.date.str_to_date("%d-%m-%Y %h:%i");
-            var date_start = formatFunc(data.start_date);
-            values[this.map_date_start] = JSON.stringify(date_start);
+            values[this.map_date_start] = time.datetime_to_str(formatFunc(data.start_date));
             // console.log('time');
-            // console.log(time.datetime_to_str(new Date("2019-09-07T20:00:00.000Z")));
+            // console.log(values[this.map_date_start]);
             args.push(id);
             args.push(values)
             // console.log({values});
