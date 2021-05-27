@@ -30,8 +30,6 @@ class DependingTasks(models.Model):
                 r.project_id = r.task_id.project_id
             elif r.depending_task_id:
                 r.project_id = r.depending_task_id.project_id
-            else:
-                import pdb; pdb.set_trace()
 
 
 class Task(models.Model):
