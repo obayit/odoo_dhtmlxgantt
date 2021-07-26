@@ -1,0 +1,224 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* dhx_gantt
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0-20210223\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-07-07 22:12+0000\n"
+"PO-Revision-Date: 2021-07-07 22:12+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: dhx_gantt
+#: model:ir.model,name:dhx_gantt.model_ir_actions_act_window_view
+msgid "Action Window View"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields.selection,name:dhx_gantt.selection__project_depending_tasks__state__confirm
+msgid "Confirm"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_depending_tasks__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_depending_tasks__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields.selection,name:dhx_gantt.selection__ir_actions_act_window_view__view_mode__dhx_gantt
+#: model:ir.model.fields.selection,name:dhx_gantt.selection__ir_ui_view__type__dhx_gantt
+msgid "DHX Gantt"
+msgstr ""
+
+#. module: dhx_gantt
+#: model_terms:ir.ui.view,arch_db:dhx_gantt.view_task_gantt_data_form
+msgid "Dependencies"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_task__dependency_task_ids
+msgid "Dependency Task"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_depending_tasks__depending_task_id
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_task__depending_task_ids
+msgid "Depending Task"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_ir_actions_act_window_view__display_name
+#: model:ir.model.fields,field_description:dhx_gantt.field_ir_ui_view__display_name
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_depending_tasks__display_name
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_task__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields.selection,name:dhx_gantt.selection__project_depending_tasks__state__done
+msgid "Done"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields.selection,name:dhx_gantt.selection__project_depending_tasks__state__draft
+msgid "Draft"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_task__planned_duration
+msgid "Duration"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields.selection,name:dhx_gantt.selection__project_depending_tasks__relation_type__2
+msgid "Finish to Finish"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields.selection,name:dhx_gantt.selection__project_depending_tasks__relation_type__0
+msgid "Finish to Start"
+msgstr ""
+
+#. module: dhx_gantt
+#: model_terms:ir.ui.view,arch_db:dhx_gantt.view_task_gantt_data_form
+msgid "Gantt Info"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_ir_actions_act_window_view__id
+#: model:ir.model.fields,field_description:dhx_gantt.field_ir_ui_view__id
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_depending_tasks__id
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_task__id
+msgid "ID"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_task__lag_time
+msgid "Lag Time"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_ir_actions_act_window_view____last_update
+#: model:ir.model.fields,field_description:dhx_gantt.field_ir_ui_view____last_update
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_depending_tasks____last_update
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_task____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_depending_tasks__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_depending_tasks__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: dhx_gantt
+#: model_terms:ir.ui.view,arch_db:dhx_gantt.view_task_gantt_data_form
+msgid "Predecessors"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_depending_tasks__project_id
+msgid "Project"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.actions.client,name:dhx_gantt.action_project_show_gantt
+msgid "Project Gantt"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_task__recursive_dependency_task_ids
+msgid "Recursive Dependencies"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_depending_tasks__relation_type
+msgid "Relation Type"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_task__links_serialized_json
+msgid "Serialized Links JSON"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_task__date_start
+msgid "Start Date"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields.selection,name:dhx_gantt.selection__project_depending_tasks__relation_type__3
+msgid "Start to Finish"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields.selection,name:dhx_gantt.selection__project_depending_tasks__relation_type__1
+msgid "Start to Start"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_depending_tasks__state
+msgid "State"
+msgstr ""
+
+#. module: dhx_gantt
+#: model_terms:ir.ui.view,arch_db:dhx_gantt.view_task_gantt_data_form
+msgid "Successors"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model,name:dhx_gantt.model_project_task
+#: model:ir.model.fields,field_description:dhx_gantt.field_project_depending_tasks__task_id
+msgid "Task"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model,name:dhx_gantt.model_project_depending_tasks
+msgid "Tasks Dependency (m2m)"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.constraint,message:dhx_gantt.constraint_project_depending_tasks_task_relation_unique
+msgid "Two tasks can have only one relation!"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model,name:dhx_gantt.model_ir_ui_view
+msgid "View"
+msgstr ""
+
+#. module: dhx_gantt
+#: model:ir.model.fields,field_description:dhx_gantt.field_ir_actions_act_window_view__view_mode
+#: model:ir.model.fields,field_description:dhx_gantt.field_ir_ui_view__type
+#: model:ir.model.fields,field_description:dhx_gantt.field_website_page__type
+msgid "View Type"
+msgstr ""
+
+#. module: dhx_gantt
+#. openerp-web
+#: code:addons/dhx_gantt/static/src/xml/gantt.xml:0
+#, python-format
+msgid "Zoom In"
+msgstr ""
+
+#. module: dhx_gantt
+#. openerp-web
+#: code:addons/dhx_gantt/static/src/xml/gantt.xml:0
+#, python-format
+msgid "Zoom Out"
+msgstr ""
